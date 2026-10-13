@@ -6,7 +6,8 @@ Unidade: metros. No DXF o eixo y aponta para cima, então a planta é espelhada 
 from . import planta as pl
 
 # nome da camada → cor do AutoCAD (1 vermelho, 2 amarelo, 3 verde, 4 ciano, 5 azul, 6 magenta, 7 branco/preto)
-CAMADAS = {"PAREDES": 7, "TEXTOS": 7, "LUZ": 1, "TOMADAS": 5, "INTERRUPTORES": 3, "QUADRO": 6, "UNIFILAR": 7}
+CAMADAS = {"PAREDES": 7, "ABERTURAS": 8, "TEXTOS": 7, "LUZ": 1, "TOMADAS": 5, "INTERRUPTORES": 3,
+           "QUADRO": 6, "UNIFILAR": 7}
 
 
 class Desenho:
@@ -72,6 +73,18 @@ def gerar(dados: dict, resultado: dict) -> bytes:
         d.texto("TEXTOS", rot["x"], Y(rot["y"]), rot["fonte"] / 48 * 0.75, rot["texto"].replace("m²", "m2"), centro=True)
         if rot["area"]:
             d.texto("TEXTOS", rot["x"], Y(rot["y"] + 0.27), 0.13, rot["area"].replace("m²", "m2"), centro=True)
+
+    for c in comodos:
+        for a in pl.aberturas_absolutas(c):
+            dx, dy = a["dentro"]
+            if a["tipo"] == "janela":
+                for t in (-0.07, 0.0, 0.07):           # janela: três linhas paralelas na parede
+                    d.linha("ABERTURAS", a["x1"] + dx * t, Y(a["y1"] + dy * t), a["x2"] + dx * t, Y(a["y2"] + dy * t))
+            elif a.get("folha") is not False:
+                arco = pl.arco_da_porta(a)             # porta: folha + arco de abertura
+                d.linha("ABERTURAS", a["x1"], Y(a["y1"]), arco[-1][0], Y(arco[-1][1]))
+                for (ax, ay), (bx, by) in zip(arco, arco[1:]):
+                    d.linha("ABERTURAS", ax, Y(ay), bx, Y(by))
 
     for p in info["itens"]:
         x, y = p["x"], Y(p["y"])

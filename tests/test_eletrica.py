@@ -184,6 +184,37 @@ class TestPlanta(unittest.TestCase):
         d2 = projeto(SALA | {"x": 0, "y": 0}, COZINHA | {"x": 1, "y": 1})
         self.assertTrue(any("sobrepostos" in a for a in d2["avisos"]))
 
+    def test_tomadas_desviam_da_porta_e_interruptor_fica_ao_lado(self):
+        quarto = {"nome": "Quarto", "tipo": "dormitorio", "largura": 3, "comprimento": 3, "x": 0, "y": 0,
+                  "aberturas": [{"tipo": "porta", "parede": "S", "inicio": 1.0, "largura": 0.9}],
+                  "tomadas": 8}
+        d = projeto(quarto)
+        info = planta.pontos(d, circuitos.calcular(d))
+        for p in info["itens"]:
+            if p["tipo"] == "tug" and p["lado"] == "S":
+                self.assertFalse(1.0 - planta.FOLGA_PORTA < p["x"] < 1.9 + planta.FOLGA_PORTA, p)
+        interruptor = next(p for p in info["itens"] if p["tipo"] == "interruptor")
+        self.assertEqual(interruptor["lado"], "S")
+        self.assertAlmostEqual(interruptor["x"], 1.0 + 0.9 + 0.15)          # logo depois do vão
+
+    def test_ponto_manual_e_respeitado(self):
+        sala = SALA | {"largura": 4.5, "comprimento": 4, "x": 1, "y": 1,
+                       "pontos": [{"tipo": "tug", "indice": 0, "x": 4.35, "y": 2.0},
+                                  {"tipo": "luz", "indice": 0, "x": 1.0, "y": 1.0}]}
+        d = projeto(sala)
+        itens = planta.pontos(d, circuitos.calcular(d))["itens"]
+        tug0 = next(p for p in itens if p["tipo"] == "tug" and p["indice"] == 0)
+        luz = next(p for p in itens if p["tipo"] == "luz")
+        self.assertEqual((tug0["x"], tug0["y"], tug0["lado"], tug0["manual"]), (5.35, 3.0, "L", True))
+        self.assertEqual((luz["x"], luz["y"], luz["manual"]), (2.0, 2.0, True))
+
+    def test_abertura_invalida_e_erro(self):
+        with self.assertRaises(ErroProjeto):
+            projeto(SALA | {"largura": 4, "comprimento": 4,
+                            "aberturas": [{"tipo": "porta", "parede": "N", "inicio": 3.5, "largura": 0.9}]})
+        with self.assertRaises(ErroProjeto):
+            projeto(SALA | {"aberturas": [{"tipo": "portao", "parede": "N"}]})
+
     def test_dxf_valido(self):
         texto = dxf.gerar(self.d, self.r).decode("cp1252")
         linhas = texto.split("\r\n")

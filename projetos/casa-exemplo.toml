@@ -16,10 +16,14 @@ quadro_y = 5.15
 # Cada cômodo: tipo, largura e comprimento (m) e posição na planta (x, y do canto
 # superior esquerdo, em metros). A distância até o quadro é estimada pela planta;
 # para informar na mão, use distancia_quadro = N.
-# Opcional: tomadas = N (mais que o mínimo), pontos_luz = N, [[comodos.equipamentos]].
+#
+# Portas e janelas (aberturas): parede N (cima), S (baixo), L (direita) ou O (esquerda);
+# "inicio" é a distância do canto (esquerdo em N/S, de cima em L/O) até o vão.
+# Cadastre a porta nos dois cômodos; no cômodo para onde ela NÃO abre, use folha = false.
+#
+# Opcional: tomadas = N, pontos_luz = N, [[comodos.equipamentos]] e
+# [[comodos.pontos]] para fixar um ponto à mão (tipo, indice, x, y relativos ao cômodo).
 # Cômodo irregular: em vez de largura/comprimento, use area = N e perimetro = N.
-# Tipos: sala, dormitorio, cozinha, copa, area_servico, lavanderia, banheiro, varanda,
-#        corredor, garagem, escritorio, externa, outro
 
 [[comodos]]
 nome = "Varanda"
@@ -28,6 +32,9 @@ largura = 4.0
 comprimento = 2.0
 x = 0.0
 y = 0.0
+aberturas = [
+  { tipo = "porta", parede = "S", inicio = 1.6, largura = 0.9, folha = false },
+]
 
 [[comodos]]
 nome = "Sala"
@@ -37,6 +44,12 @@ comprimento = 4.0
 x = 0.0
 y = 2.0
 tomadas = 5
+aberturas = [
+  { tipo = "porta", parede = "N", inicio = 1.6, largura = 0.9 },
+  { tipo = "janela", parede = "O", inicio = 1.2, largura = 1.5 },
+  { tipo = "porta", parede = "L", inicio = 3.1, largura = 0.8, folha = false },
+  { tipo = "porta", parede = "S", inicio = 2.2, largura = 0.8, folha = false },
+]
 
 [[comodos]]
 nome = "Cozinha"
@@ -45,6 +58,11 @@ largura = 3.5
 comprimento = 3.0
 x = 4.5
 y = 2.0
+aberturas = [
+  { tipo = "janela", parede = "N", inicio = 1.0, largura = 1.2 },
+  { tipo = "porta", parede = "S", inicio = 2.4, largura = 0.8, folha = false },
+  { tipo = "porta", parede = "L", inicio = 0.5, largura = 0.8 },
+]
 
   [[comodos.equipamentos]]
   nome = "Micro-ondas"
@@ -62,6 +80,10 @@ largura = 2.5
 comprimento = 2.0
 x = 8.0
 y = 2.0
+aberturas = [
+  { tipo = "janela", parede = "N", inicio = 0.6, largura = 1.0 },
+  { tipo = "porta", parede = "O", inicio = 0.5, largura = 0.8, folha = false },
+]
 
   [[comodos.equipamentos]]
   nome = "Máquina de lavar"
@@ -74,6 +96,12 @@ largura = 4.0
 comprimento = 1.0
 x = 4.5
 y = 5.0
+aberturas = [
+  { tipo = "porta", parede = "O", inicio = 0.1, largura = 0.8 },
+  { tipo = "porta", parede = "N", inicio = 2.4, largura = 0.8 },
+  { tipo = "porta", parede = "S", inicio = 0.05, largura = 0.6, folha = false },
+  { tipo = "porta", parede = "S", inicio = 1.0, largura = 0.8, folha = false },
+]
 
 [[comodos]]
 nome = "Quarto 1"
@@ -82,6 +110,10 @@ largura = 3.2
 comprimento = 3.2
 x = 0.0
 y = 6.0
+aberturas = [
+  { tipo = "porta", parede = "N", inicio = 2.2, largura = 0.8 },
+  { tipo = "janela", parede = "O", inicio = 1.0, largura = 1.2 },
+]
 
   [[comodos.equipamentos]]
   nome = "Ar-condicionado 12.000 BTU"
@@ -96,6 +128,10 @@ largura = 2.0
 comprimento = 1.8
 x = 3.2
 y = 6.0
+aberturas = [
+  { tipo = "porta", parede = "N", inicio = 1.35, largura = 0.6 },
+  { tipo = "janela", parede = "S", inicio = 0.6, largura = 0.6 },
+]
 
   [[comodos.equipamentos]]
   nome = "Chuveiro"
@@ -109,6 +145,11 @@ largura = 3.5
 comprimento = 3.5
 x = 5.2
 y = 6.0
+aberturas = [
+  { tipo = "porta", parede = "N", inicio = 0.3, largura = 0.8 },
+  { tipo = "janela", parede = "S", inicio = 1.2, largura = 1.2 },
+  { tipo = "porta", parede = "L", inicio = 0.4, largura = 0.7, folha = false },
+]
 
   [[comodos.equipamentos]]
   nome = "Ar-condicionado 12.000 BTU"
@@ -123,6 +164,10 @@ largura = 2.0
 comprimento = 1.6
 x = 8.7
 y = 6.0
+aberturas = [
+  { tipo = "porta", parede = "O", inicio = 0.4, largura = 0.7 },
+  { tipo = "janela", parede = "L", inicio = 0.5, largura = 0.6 },
+]
 
   [[comodos.equipamentos]]
   nome = "Chuveiro"

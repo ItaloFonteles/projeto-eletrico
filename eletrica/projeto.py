@@ -19,6 +19,26 @@ def carregar(caminho: str) -> dict:
     return preparar(dados)
 
 
+def _validar_planta(c: dict, rotulo: str) -> list[str]:
+    """Confere portas/janelas ([[comodos.aberturas]]) e posições manuais ([[comodos.pontos]])."""
+    erros = []
+    for a in c.get("aberturas", []):
+        if a.get("tipo") not in ("porta", "janela"):
+            erros.append(f"{rotulo}: abertura com tipo '{a.get('tipo')}' (use porta ou janela)")
+            continue
+        if a.get("parede") not in planta.PAREDES:
+            erros.append(f"{rotulo}: {a['tipo']} com parede '{a.get('parede')}' (use N, S, L ou O)")
+            continue
+        a.setdefault("largura", 0.8 if a["tipo"] == "porta" else 1.2)
+        a.setdefault("inicio", 0.0)
+        if a["inicio"] < 0 or a["inicio"] + a["largura"] > planta.comprimento_parede(c, a["parede"]) + 0.01:
+            erros.append(f"{rotulo}: {a['tipo']} na parede {a['parede']} passa do tamanho da parede")
+    for p in c.get("pontos", []):
+        if p.get("tipo") not in ("luz", "tug", "tue", "interruptor") or "x" not in p or "y" not in p:
+            erros.append(f"{rotulo}: ponto manual precisa de tipo (luz, tug, tue, interruptor), x e y")
+    return erros
+
+
 def preparar(dados: dict) -> dict:
     erros = []
     p = dados.setdefault("projeto", {})
@@ -61,6 +81,8 @@ def preparar(dados: dict) -> dict:
         nomes.add(c.get("nome"))
         if c.get("tipo") not in norma.TIPOS:
             erros.append(f"{rotulo}: tipo '{c.get('tipo')}' inválido (use {', '.join(sorted(norma.TIPOS))})")
+        if "area" in c:
+            erros.extend(_validar_planta(c, rotulo))
         for eq in c.get("equipamentos", []):
             if "nome" not in eq or "potencia_w" not in eq:
                 erros.append(f"{rotulo}: equipamento precisa de 'nome' e 'potencia_w'")

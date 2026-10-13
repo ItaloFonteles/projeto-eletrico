@@ -26,6 +26,8 @@
     .grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
     label { display: flex; flex-direction: column; gap: 4px; font-size: .85rem; color: var(--suave); font-weight: 600; }
     input, select { font: inherit; padding: 9px 10px; border: 1px solid var(--borda); border-radius: 8px; background: #fff; color: var(--texto); min-width: 0; }
+    label > input:not([type=checkbox]):not([type=file]), label > select { width: 100%; }
+    .grade > label, .equip > label { min-width: 0; }
     input:focus, select:focus { outline: 2px solid var(--dourado); border-color: var(--dourado); }
     .comodo { border: 1px solid var(--borda); border-left: 4px solid var(--dourado); border-radius: 10px; padding: 14px; margin-bottom: 12px; background: #fff; }
     .comodo-topo { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
@@ -49,13 +51,19 @@
     #resultado iframe { width: 100%; height: 80vh; border: 1px solid var(--borda); border-radius: 10px; background: #fff; }
     .downloads { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
     .dica { font-size: .82rem; color: var(--suave); font-weight: 400; }
-    .editor-caixa { border: 1px solid var(--borda); border-radius: 10px; background: #fff; overflow: hidden; }
+    .editor-caixa { border: 1px solid var(--borda); border-radius: 10px; background: #fff; overflow: auto; max-height: 75vh; }
     #editor { display: block; width: 100%; height: auto; touch-action: none; user-select: none; }
+    #editor.movendo-vista { cursor: move; }
     #editor .sala { cursor: grab; }
     #editor .sala.arrastando { cursor: grabbing; opacity: .85; }
     #editor .sala rect { fill: #fbf7ef; stroke: #24191a; stroke-width: .06; }
     #editor .sala:hover rect { fill: #f6e9cf; }
     #editor .sala.sobreposto rect { fill: #fde2e0; stroke: #b42318; }
+    #editor .sala.selecionado > rect { stroke: #c9a24b; stroke-width: .1; }
+    #editor .abertura, #editor .ponto { cursor: pointer; }
+    .ferramentas { align-items: center; min-height: 44px; padding: 8px 10px; margin-top: 10px; background: #fff;
+                   border: 1px dashed var(--borda); border-radius: 8px; font-size: .9rem; }
+    .ferramentas select { padding: 6px 8px; }
     #editor text { pointer-events: none; }
     #editor #quadro { cursor: grab; }
     footer { text-align: center; color: var(--suave); font-size: .85rem; padding: 20px 0 40px; }
@@ -117,12 +125,17 @@
 
     <section class="bloco">
       <h2>3. Planta (monte a casa)</h2>
-      <p class="dica" style="margin:0 0 10px">Arraste os cômodos para montar a casa (as paredes se encaixam quando chegam perto).
-        <b>Clique duas vezes</b> num cômodo para girá-lo. Arraste o <b style="color:var(--vinho)">QD</b> para onde ficará o quadro.
-        A distância de cada cômodo até o quadro sai daqui quando o campo "Distância" estiver vazio.</p>
-      <div class="editor-caixa"><svg id="editor" aria-label="Planta: arraste os cômodos"></svg></div>
+      <p class="dica" style="margin:0 0 10px">
+        <b>1.</b> Arraste os cômodos para montar a casa (as paredes se encaixam quando chegam perto; toque duplo gira).
+        <b>2.</b> Toque num cômodo e use <b>+ Porta</b> / <b>+ Janela</b>; arraste-as pelas paredes.
+        <b>3.</b> Arraste tomadas, interruptores, luzes e o <b style="color:var(--vinho)">QD</b> para o lugar certo
+        (pontos movidos à mão ficam com contorno tracejado). O número em cada ponto é o circuito.</p>
+      <div class="editor-caixa"><svg id="editor" aria-label="Planta: arraste cômodos, portas, janelas e pontos"></svg></div>
+      <div class="linha-botoes ferramentas" id="ferramentas"></div>
       <div class="linha-botoes">
-        <button type="button" class="secundario" id="arrumar">Arrumar automaticamente</button>
+        <button type="button" class="secundario" id="zoom-mais" aria-label="Ampliar a planta">🔍 Ampliar</button>
+        <button type="button" class="secundario" id="zoom-menos" aria-label="Reduzir a planta">Reduzir</button>
+        <button type="button" class="secundario" id="arrumar">Arrumar cômodos automaticamente</button>
       </div>
       <input type="hidden" id="p-quadro-x"><input type="hidden" id="p-quadro-y">
     </section>

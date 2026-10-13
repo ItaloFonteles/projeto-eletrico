@@ -22,7 +22,13 @@ Como o projeto é um arquivo de texto versionado no **Git**, cada revisão fica 
 
 ## Desenhos: planta de pontos e DXF
 
-- **Planta (monte a casa):** no formulário, arraste os cômodos para montar a casa. As paredes se encaixam quando chegam perto, e o **toque duplo gira** o cômodo. Também dá para arrastar o **QD** até onde ficará o quadro. Cômodos sobrepostos ficam em vermelho.
+- **Planta (monte a casa):** no formulário:
+  - arraste os cômodos para montar a casa: as paredes se encaixam quando chegam perto, e o **toque duplo gira** o cômodo, levando portas, janelas e pontos junto;
+  - toque num cômodo para usar **+ Porta** e **+ Janela**, e arraste-as pelas paredes. Na barra aparecem a largura, "só o vão" (porta que abre para o outro cômodo) e Remover;
+  - arraste **tomadas, interruptores, luzes** e o **QD** para o lugar certo. Tomadas e interruptores grudam na parede. Pontos movidos à mão ficam tracejados, e "Voltar pontos para o automático" desfaz;
+  - use **Ampliar/Reduzir** e arraste o fundo para mover a vista (pensado para o celular);
+  - cômodos sobrepostos ficam em vermelho.
+- **Distribuição automática com portas:** as tomadas **não caem no vão das portas** (folga de 10 cm), e o **interruptor fica ao lado da porta**, do lado da fechadura. Tomada embaixo de janela é permitida.
 - **Planta de pontos esquemática** (`planta.svg` e no relatório):
   - luz no centro do teto;
   - tomadas de uso geral e específico distribuídas pelas paredes;
@@ -32,7 +38,18 @@ Como o projeto é um arquivo de texto versionado no **Git**, cada revisão fica 
 - **DXF** (`projeto.dxf`, formato R12): planta + unifilar em camadas (`PAREDES`, `LUZ`, `TOMADAS`, `INTERRUPTORES`, `QUADRO`, `UNIFILAR`), em metros. Abre no **AutoCAD, LibreCAD, QCAD e BricsCAD**, para o projetista ajustar e assinar. Validado com o *auditor* do [ezdxf](https://github.com/mozman/ezdxf): 0 erros.
 - **Distância até o quadro:** se não for informada, é **estimada pela planta** (caminho em L do quadro ao centro do cômodo + 3 m de subidas).
 
-No `.toml`, a posição é `x`/`y` (canto superior esquerdo do cômodo, em metros) e o quadro é `quadro_x`/`quadro_y` em `[projeto]`. Cômodos sem posição são arrumados automaticamente em fileiras.
+No `.toml`, a posição é `x`/`y` (canto superior esquerdo do cômodo, em metros) e o quadro é `quadro_x`/`quadro_y` em `[projeto]`. Cômodos sem posição são arrumados automaticamente em fileiras. Portas, janelas e pontos fixados à mão:
+
+```toml
+aberturas = [
+  { tipo = "porta", parede = "N", inicio = 1.6, largura = 0.9 },                  # N, S, L ou O
+  { tipo = "porta", parede = "L", inicio = 3.1, largura = 0.8, folha = false },   # abre para o outro cômodo
+  { tipo = "janela", parede = "O", inicio = 1.2, largura = 1.5 },
+]
+pontos = [
+  { tipo = "tug", indice = 2, x = 0.15, y = 0.71 },   # luz | tug | tue | interruptor; x/y relativos ao cômodo
+]
+```
 
 > A planta é **esquemática**: a posição exata de cada ponto (portas, janelas e móveis) é definida no projeto final e na obra.
 
@@ -131,7 +148,7 @@ git tag casa-maria-rev-B                             # marca a versão entregue
 docker run --rm -v "${PWD}:/p" -w /p python:3.12-slim python -m unittest -v
 ```
 
-23 testes cobrem as regras da norma (iluminação, quantidade e potência das tomadas, exceção de mais de 6 tomadas molhadas), o dimensionamento (chuveiro, queda de tensão, seções mínimas, In ≤ Iz, DR), o balanço de fases, a planta (pontos dentro dos cômodos, um ponto por carga, distância estimada, sobreposição), o DXF e a geração dos arquivos.
+26 testes cobrem as regras da norma (iluminação, quantidade e potência das tomadas, exceção de mais de 6 tomadas molhadas), o dimensionamento (chuveiro, queda de tensão, seções mínimas, In ≤ Iz, DR), o balanço de fases, a planta (pontos dentro dos cômodos, um ponto por carga, distância estimada, sobreposição), portas (tomadas fora do vão, interruptor ao lado), pontos fixados à mão, o DXF e a geração dos arquivos.
 
 ## Estrutura
 

@@ -69,26 +69,107 @@ def sobreposicoes(comodos: list[dict]) -> list[str]:
     return avisos
 
 
-def _pelas_paredes(x, y, w, h, n, recuo):
-    """n pontos igualmente espaçados ao longo das paredes, em sentido horário."""
+# ---------------------------------------------------------------- paredes, portas e janelas
+# Paredes do cômodo: N (cima), L (direita), S (baixo), O (esquerda).
+# Posição ao longo da parede ("inicio"): a partir do canto esquerdo em N/S e do canto de cima em L/O.
+PAREDES = ("N", "L", "S", "O")
+FOLGA_PORTA = 0.10        # tomadas ficam pelo menos 10 cm longe do vão da porta
+
+
+def comprimento_parede(c: dict, parede: str) -> float:
+    w, h = dimensoes(c)
+    return w if parede in ("N", "S") else h
+
+
+def _ponto_na_parede(w, h, parede, s, recuo):
+    """Coordenadas locais (dentro do cômodo) de um ponto a 's' m do início da parede."""
+    return {"N": (s, recuo), "S": (s, h - recuo), "O": (recuo, s), "L": (w - recuo, s)}[parede]
+
+
+def _d(w, h, parede, s):
+    """Posição 's' na parede → distância 'd' ao longo do perímetro, sentido horário a partir do canto N-O."""
+    return {"N": s, "L": w + s, "S": w + h + (w - s), "O": 2 * w + h + (h - s)}[parede]
+
+
+def _de_d(w, h, d):
+    """Inverso de _d: distância no perímetro → (parede, s)."""
+    if d < w:
+        return "N", d
+    if d < w + h:
+        return "L", d - w
+    if d < 2 * w + h:
+        return "S", w - (d - w - h)
+    return "O", h - (d - 2 * w - h)
+
+
+def _trechos_livres(c: dict):
+    """Partes do perímetro onde cabem tomadas: o perímetro todo menos os vãos das portas."""
+    w, h = dimensoes(c)
     perimetro = 2 * (w + h)
-    passo = perimetro / n
+    bloqueios = []
+    for a in c.get("aberturas", []):
+        if a["tipo"] != "porta":
+            continue                                  # tomada embaixo de janela é permitida
+        d1 = _d(w, h, a["parede"], a["inicio"])
+        d2 = _d(w, h, a["parede"], a["inicio"] + a["largura"])
+        bloqueios.append((min(d1, d2) - FOLGA_PORTA, max(d1, d2) + FOLGA_PORTA))
+    livres, inicio = [], 0.0
+    for b1, b2 in sorted(bloqueios):
+        if b1 > inicio:
+            livres.append((inicio, b1))
+        inicio = max(inicio, b2)
+    if inicio < perimetro:
+        livres.append((inicio, perimetro))
+    return livres
+
+
+def _pelas_paredes(c: dict, n: int):
+    """n pontos igualmente espaçados pelas paredes livres (fora dos vãos de porta), em sentido horário."""
+    if n == 0:
+        return []
+    w, h = dimensoes(c)
+    livres = _trechos_livres(c) or [(0.0, 2 * (w + h))]
+    total = sum(b - a for a, b in livres)
+    passo = total / n
     pontos = []
     for i in range(n):
-        d = passo * (i + 0.5)
-        if d < w:
-            pontos.append((x + d, y + recuo, "N"))
-        elif d < w + h:
-            pontos.append((x + w - recuo, y + d - w, "L"))
-        elif d < 2 * w + h:
-            pontos.append((x + w - (d - w - h), y + h - recuo, "S"))
-        else:
-            pontos.append((x + recuo, y + h - (d - 2 * w - h), "O"))
-    return [(round(px, 3), round(py, 3), lado) for px, py, lado in pontos]
+        alvo = passo * (i + 0.5)
+        for a, b in livres:
+            if alvo <= b - a:
+                parede, s = _de_d(w, h, a + alvo)
+                lx, ly = _ponto_na_parede(w, h, parede, s, RECUO)
+                pontos.append((lx, ly, parede))
+                break
+            alvo -= b - a
+    return pontos
+
+
+def parede_mais_proxima(c: dict, lx: float, ly: float) -> str:
+    w, h = dimensoes(c)
+    return min({"N": ly, "S": h - ly, "O": lx, "L": w - lx}.items(), key=lambda kv: kv[1])[0]
+
+
+def _interruptor_automatico(c: dict, quadro_local):
+    """Ao lado da 1ª porta (do lado da fechadura); sem porta, no canto mais perto do quadro."""
+    w, h = dimensoes(c)
+    portas = [a for a in c.get("aberturas", []) if a["tipo"] == "porta"]
+    if portas:
+        p = portas[0]
+        s = p["inicio"] + p["largura"] + 0.15
+        if s > comprimento_parede(c, p["parede"]) - RECUO:
+            s = p["inicio"] - 0.15                     # não cabe depois da porta: fica antes
+        return _ponto_na_parede(w, h, p["parede"], s, RECUO)
+    qx, qy = quadro_local
+    cantos = [(RECUO, RECUO), (w - RECUO, RECUO), (w - RECUO, h - RECUO), (RECUO, h - RECUO)]
+    return min(cantos, key=lambda q: abs(q[0] - qx) + abs(q[1] - qy))
 
 
 def pontos(dados: dict, resultado: dict) -> dict:
-    """Lista de pontos com posição, tipo e número do circuito."""
+    """Lista de pontos com posição (absoluta, em m), tipo, índice e número do circuito.
+
+    Cada ponto é posicionado automaticamente, a não ser que o cômodo tenha uma posição
+    manual para ele em [[comodos.pontos]] (tipo + indice, x/y relativos ao cômodo).
+    """
     projeto, comodos = dados["projeto"], dados["comodos"]
     circuito_de = {(nome, tipo, i): c.numero for c in resultado["circuitos"] for nome, tipo, i in c.pontos}
     qx, qy = posicao_quadro(projeto, comodos)
@@ -97,24 +178,63 @@ def pontos(dados: dict, resultado: dict) -> dict:
         nome, x, y = c["nome"], c["x"], c["y"]
         w, h = dimensoes(c)
         luz = circuito_de.get((nome, "luz", 0))
+        manuais = {(p["tipo"], int(p.get("indice", 0))): p for p in c.get("pontos", [])}
+        locais = []   # (tipo, indice, lx, ly, rotulo, circuito)
 
         n = c["il_pontos"]
         # luz no teto, ao longo do lado maior; em cômodo estreito desce um pouco para caber o nome
-        cy = y + h / 2 if h >= ESTREITO else y + h * 0.68
+        cy = h / 2 if h >= ESTREITO else h * 0.68
         for k in range(n):
-            px, py = (x + w * (k + 1) / (n + 1), cy) if w >= h else (x + w / 2, y + h * (k + 1) / (n + 1))
-            itens.append({"tipo": "luz", "comodo": nome, "x": round(px, 3), "y": round(py, 3), "circuito": luz})
+            lx, ly = (w * (k + 1) / (n + 1), cy) if w >= h else (w / 2, h * (k + 1) / (n + 1))
+            locais.append(("luz", k, lx, ly, None, luz))
 
         tomadas = [("tug", i, None) for i in range(c["tug_pontos"])]
         tomadas += [("tue", i, eq["nome"]) for i, eq in enumerate(c.get("equipamentos", []))]
-        for (tipo, i, rotulo), (px, py, lado) in zip(tomadas, _pelas_paredes(x, y, w, h, len(tomadas), RECUO)):
-            itens.append({"tipo": tipo, "comodo": nome, "x": px, "y": py, "lado": lado,
-                          "circuito": circuito_de.get((nome, tipo, i)), "rotulo": rotulo})
+        for (tipo, i, rotulo), (lx, ly, _) in zip(tomadas, _pelas_paredes(c, len(tomadas))):
+            locais.append((tipo, i, lx, ly, rotulo, circuito_de.get((nome, tipo, i))))
 
-        cantos = [(x + RECUO, y + RECUO), (x + w - RECUO, y + RECUO), (x + w - RECUO, y + h - RECUO), (x + RECUO, y + h - RECUO)]
-        sx, sy = min(cantos, key=lambda q: abs(q[0] - qx) + abs(q[1] - qy))
-        itens.append({"tipo": "interruptor", "comodo": nome, "x": round(sx, 3), "y": round(sy, 3), "circuito": luz})
+        sx, sy = _interruptor_automatico(c, (qx - x, qy - y))
+        locais.append(("interruptor", 0, sx, sy, None, luz))
+
+        for tipo, i, lx, ly, rotulo, circuito in locais:
+            manual = manuais.get((tipo, i))
+            if manual:
+                lx = min(max(float(manual["x"]), 0.0), w)
+                ly = min(max(float(manual["y"]), 0.0), h)
+            item = {"tipo": tipo, "indice": i, "comodo": nome, "x": round(x + lx, 3), "y": round(y + ly, 3),
+                    "circuito": circuito, "manual": bool(manual)}
+            if tipo in ("tug", "tue", "interruptor"):
+                item["lado"] = parede_mais_proxima(c, lx, ly)
+            if rotulo:
+                item["rotulo"] = rotulo
+            itens.append(item)
     return {"quadro": (qx, qy), "itens": itens}
+
+
+def aberturas_absolutas(c: dict) -> list[dict]:
+    """Portas e janelas com as pontas (x1,y1)-(x2,y2) em coordenadas absolutas e o lado de dentro."""
+    w, h = dimensoes(c)
+    saida = []
+    for a in c.get("aberturas", []):
+        ax, ay = _ponto_na_parede(w, h, a["parede"], a["inicio"], 0)
+        bx, by = _ponto_na_parede(w, h, a["parede"], a["inicio"] + a["largura"], 0)
+        saida.append({**a, "x1": c["x"] + ax, "y1": c["y"] + ay, "x2": c["x"] + bx, "y2": c["y"] + by,
+                      "dentro": DIRECAO[a["parede"]]})
+    return saida
+
+
+def arco_da_porta(a: dict, segmentos: int = 10) -> list[tuple[float, float]]:
+    """Folha da porta aberta a 90° para dentro do cômodo (dobradiça no início do vão) como polilinha."""
+    import math as m
+    hx, hy = a["x1"], a["y1"]                         # dobradiça
+    ux, uy = (a["x2"] - hx) / a["largura"], (a["y2"] - hy) / a["largura"]
+    dx, dy = a["dentro"]
+    pts = []
+    for k in range(segmentos + 1):
+        t = m.pi / 2 * k / segmentos
+        pts.append((hx + a["largura"] * (ux * m.cos(t) + dx * m.sin(t)),
+                    hy + a["largura"] * (uy * m.cos(t) + dy * m.sin(t))))
+    return pts
 
 
 # --------------------------------------------------------------------------- desenho SVG
@@ -191,6 +311,30 @@ def svg(dados: dict, resultado: dict, escala: float = 48) -> str:
         if rot["area"]:
             s.append(f'<text x="{X(rot["x"])}" y="{Y(rot["y"]) + 13:.1f}" text-anchor="middle" font-size="10" '
                      f'fill="{CORES["suave"]}">{rot["area"]}</text>')
+
+    # portas e janelas
+    for c in comodos:
+        for a in aberturas_absolutas(c):
+            dx, dy = a["dentro"]
+            if a["tipo"] == "janela":
+                t = 0.07                               # meia espessura do desenho da janela
+                pts = [(a["x1"] - dx * t, a["y1"] - dy * t), (a["x2"] - dx * t, a["y2"] - dy * t),
+                       (a["x2"] + dx * t, a["y2"] + dy * t), (a["x1"] + dx * t, a["y1"] + dy * t)]
+                s.append(f'<polygon points="{" ".join(f"{X(px)},{Y(py)}" for px, py in pts)}" '
+                         f'fill="#dbe9f6" stroke="#1f4e8c" stroke-width="1.2"/>')
+                s.append(f'<line x1="{X(a["x1"])}" y1="{Y(a["y1"])}" x2="{X(a["x2"])}" y2="{Y(a["y2"])}" '
+                         f'stroke="#1f4e8c" stroke-width="1"/>')
+            else:
+                s.append(f'<line x1="{X(a["x1"])}" y1="{Y(a["y1"])}" x2="{X(a["x2"])}" y2="{Y(a["y2"])}" '
+                         f'stroke="#fff" stroke-width="5"/>')               # vão na parede
+                if a.get("folha") is False:
+                    continue                    # mesma porta cadastrada no outro cômodo: só o vão
+                arco = arco_da_porta(a)
+                fx, fy = arco[-1]
+                s.append(f'<line x1="{X(a["x1"])}" y1="{Y(a["y1"])}" x2="{X(fx)}" y2="{Y(fy)}" '
+                         f'stroke="{CORES["parede"]}" stroke-width="1.6"/>')    # folha da porta
+                s.append(f'<polyline points="{" ".join(f"{X(px)},{Y(py)}" for px, py in arco)}" fill="none" '
+                         f'stroke="{CORES["suave"]}" stroke-width="1" stroke-dasharray="4 3"/>')
 
     # pontos
     r = 0.15 * escala

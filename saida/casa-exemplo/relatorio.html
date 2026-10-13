@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-br"><head><meta charset="UTF-8">
+<title>Pré-dimensionamento elétrico · Casa Exemplo</title>
+<style>
+  @page { size: A4; margin: 12mm; }
+  body { font-family: "Segoe UI", Arial, sans-serif; color: #24191a; max-width: 1000px; margin: 0 auto; padding: 24px; font-size: 13.5px; }
+  header { border-bottom: 3px solid #c9a24b; padding-bottom: 10px; display: flex; justify-content: space-between; gap: 20px; align-items: flex-end; }
+  h1 { margin: 0; color: #7a1f2b; font-size: 22px; }
+  .sub { color: #6b5d5f; }
+  .aviso { background: #fff4e5; border-left: 4px solid #b7791f; padding: 10px 14px; margin: 16px 0; }
+  h2 { color: #7a1f2b; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; margin: 26px 0 8px; }
+  table { width: 100%; border-collapse: collapse; }
+  th { background: #2e0b12; color: #fff; text-align: left; padding: 6px 7px; font-weight: 600; font-size: 12.5px; }
+  td { padding: 6px 7px; border-bottom: 1px solid #e3d3b4; vertical-align: top; }
+  td.n { white-space: nowrap; }
+  tfoot td { font-weight: 700; background: #f6efe2; }
+  .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 16px; }
+  .card { background: #f6efe2; border-radius: 8px; padding: 10px 12px; }
+  .card b { display: block; font-size: 20px; } .card span { color: #6b5d5f; font-size: 12px; }
+  ul { margin: 6px 0; padding-left: 20px; }
+  svg { width: 100%; height: auto; border: 1px solid #e3d3b4; border-radius: 8px; }
+  footer { margin-top: 28px; border-top: 1px solid #e3d3b4; padding-top: 8px; color: #6b5d5f; font-size: 12px; display: flex; justify-content: space-between; }
+  small { color: #6b5d5f; }
+</style></head><body>
+<header>
+  <div><h1>Pré-dimensionamento da instalação elétrica</h1>
+  <div class="sub">Casa Exemplo · Família Silva · Boa Vista - RR</div></div>
+  <div class="sub">Preparado por<br><b>Ítalo Fonteles · italofonteles.dev</b><br>13/10/2026</div>
+</header>
+
+<div class="aviso"><b>Importante:</b> estudo de pré-dimensionamento baseado na ABNT NBR 5410:2004, para orçamento e
+planejamento. <b>Não substitui o projeto elétrico</b> elaborado e assinado por profissional habilitado (ART/TRT).</div>
+
+<div class="cards">
+  <div class="card"><b>24,40 kVA</b><span>potência instalada</span></div>
+  <div class="card"><b>12</b><span>circuitos</span></div>
+  <div class="card"><b>8</b><span>circuitos com DR</span></div>
+  <div class="card"><b>Bifásico</b><span>127/220 V</span></div>
+</div>
+
+<h2>1. Previsão de cargas por cômodo</h2>
+<table><thead><tr><th>Cômodo</th><th>Área (m²)</th><th>Perímetro (m)</th><th>Iluminação (VA)</th><th>Tomadas</th><th>TUG (VA)</th><th>Uso específico</th></tr></thead>
+<tbody><tr><td>Sala</td><td>18,00</td><td>17,00</td><td>280</td><td>5 <small>(mín. 4)</small></td><td>500</td><td>—</td></tr><tr><td>Cozinha</td><td>10,50</td><td>13,00</td><td>160</td><td>4</td><td>1400</td><td>Micro-ondas (1500 VA)<br>Forno elétrico (2000 VA)</td></tr><tr><td>Área de serviço</td><td>5,00</td><td>9,00</td><td>100</td><td>3</td><td>1300</td><td>Máquina de lavar (1000 VA)</td></tr><tr><td>Corredor</td><td>4,00</td><td>10,00</td><td>100</td><td>1</td><td>100</td><td>—</td></tr><tr><td>Quarto 1</td><td>10,24</td><td>12,80</td><td>160</td><td>3</td><td>300</td><td>Ar-condicionado 12.000 BTU (1222 VA)</td></tr><tr><td>Quarto 2 (suíte)</td><td>12,25</td><td>14,00</td><td>160</td><td>3</td><td>300</td><td>Ar-condicionado 12.000 BTU (1222 VA)</td></tr><tr><td>Banheiro social</td><td>3,60</td><td>7,80</td><td>100</td><td>1</td><td>600</td><td>Chuveiro (5500 VA)</td></tr><tr><td>Banheiro suíte</td><td>3,20</td><td>7,20</td><td>100</td><td>1</td><td>600</td><td>Chuveiro (5500 VA)</td></tr><tr><td>Varanda</td><td>8,00</td><td>12,00</td><td>100</td><td>1</td><td>100</td><td>—</td></tr></tbody>
+<tfoot><tr><td colspan="3">Totais</td><td>1260</td><td>22</td><td>5200</td><td>17944 VA</td></tr></tfoot></table>
+
+<h2>2. Quadro de circuitos</h2>
+<table><thead><tr><th>Nº</th><th>Descrição</th><th>Tipo</th><th>VA</th><th>V</th><th>Ib (A)</th><th>Fase</th><th>Disjuntor</th><th>DR</th><th>Seção</th><th>Iz (A)</th><th>Dist.</th><th>Queda</th></tr></thead>
+<tbody><tr><td><b>1</b></td><td>Iluminação · Sala, Cozinha, Área de serviço, Corredor, Quarto 1, Quarto 2 (suíte), Banheiro social, Banheiro suíte, Varanda</td><td>Iluminação</td><td>1260</td><td>127</td><td>9,9</td><td>B</td><td class='n'>1P 10 A</td><td>—</td><td class='n'>1,5 mm²</td><td>11,5</td><td class='n'>15 m</td><td class='n'>2,79%</td></tr><tr><td><b>2</b></td><td>Tomadas · Cozinha</td><td>Tomadas (TUG)</td><td>1400</td><td>127</td><td>11,0</td><td>B</td><td class='n'>1P 13 A</td><td>Sim</td><td class='n'>2,5 mm²</td><td>15,8</td><td class='n'>4 m</td><td class='n'>0,50%</td></tr><tr><td><b>3</b></td><td>Tomadas · Área de serviço</td><td>Tomadas (TUG)</td><td>1300</td><td>127</td><td>10,2</td><td>B</td><td class='n'>1P 13 A</td><td>Sim</td><td class='n'>2,5 mm²</td><td>15,8</td><td class='n'>7 m</td><td class='n'>0,81%</td></tr><tr><td><b>4</b></td><td>Tomadas · Sala, Corredor, Quarto 1, Quarto 2 (suíte)</td><td>Tomadas (TUG)</td><td>1200</td><td>127</td><td>9,4</td><td>A</td><td class='n'>1P 10 A</td><td>—</td><td class='n'>2,5 mm²</td><td>15,8</td><td class='n'>13 m</td><td class='n'>1,38%</td></tr><tr><td><b>5</b></td><td>Tomadas · Banheiro social, Banheiro suíte, Varanda</td><td>Tomadas (TUG)</td><td>1300</td><td>127</td><td>10,2</td><td>A</td><td class='n'>1P 13 A</td><td>Sim</td><td class='n'>2,5 mm²</td><td>15,8</td><td class='n'>15 m</td><td class='n'>1,73%</td></tr><tr><td><b>6</b></td><td>Micro-ondas · Cozinha</td><td>Uso específico (TUE)</td><td>1500</td><td>127</td><td>11,8</td><td>A</td><td class='n'>1P 13 A</td><td>Sim</td><td class='n'>2,5 mm²</td><td>15,8</td><td class='n'>4 m</td><td class='n'>0,53%</td></tr><tr><td><b>7</b></td><td>Forno elétrico · Cozinha</td><td>Uso específico (TUE)</td><td>2000</td><td>220</td><td>9,1</td><td>AB</td><td class='n'>2P 10 A</td><td>Sim</td><td class='n'>2,5 mm²</td><td>15,8</td><td class='n'>4 m</td><td class='n'>0,24%</td></tr><tr><td><b>8</b></td><td>Máquina de lavar · Área de serviço</td><td>Uso específico (TUE)</td><td>1000</td><td>127</td><td>7,9</td><td>B</td><td class='n'>1P 10 A</td><td>Sim</td><td class='n'>2,5 mm²</td><td>15,8</td><td class='n'>7 m</td><td class='n'>0,62%</td></tr><tr><td><b>9</b></td><td>Ar-condicionado 12.000 BTU · Quarto 1</td><td>Uso específico (TUE)</td><td>1222</td><td>220</td><td>5,6</td><td>AB</td><td class='n'>2P 6 A</td><td>—</td><td class='n'>2,5 mm²</td><td>15,8</td><td class='n'>10 m</td><td class='n'>0,36%</td></tr><tr><td><b>10</b></td><td>Ar-condicionado 12.000 BTU · Quarto 2 (suíte)</td><td>Uso específico (TUE)</td><td>1222</td><td>220</td><td>5,6</td><td>AB</td><td class='n'>2P 6 A</td><td>—</td><td class='n'>2,5 mm²</td><td>15,8</td><td class='n'>13 m</td><td class='n'>0,47%</td></tr><tr><td><b>11</b></td><td>Chuveiro · Banheiro social</td><td>Uso específico (TUE)</td><td>5500</td><td>220</td><td>25,0</td><td>AB</td><td class='n'>2P 25 A</td><td>Sim</td><td class='n'>6 mm²</td><td>27,0</td><td class='n'>8 m</td><td class='n'>0,54%</td></tr><tr><td><b>12</b></td><td>Chuveiro · Banheiro suíte</td><td>Uso específico (TUE)</td><td>5500</td><td>220</td><td>25,0</td><td>AB</td><td class='n'>2P 25 A</td><td>Sim</td><td class='n'>6 mm²</td><td>27,0</td><td class='n'>15 m</td><td class='n'>1,01%</td></tr></tbody></table>
+<p class="sub">Condutores de cobre, PVC 70 °C, método B1. Fatores: temperatura 0,94
+(35 °C) × agrupamento 0,70 (3 circuitos por eletroduto).
+Critérios: In ≥ Ib, In ≤ Iz, seção mínima (1,5 mm² luz / 2,5 mm² força) e queda de tensão ≤ 4%.</p>
+
+<h2>3. Balanço de fases</h2>
+<table style="max-width:420px"><tbody><tr><td>Fase A</td><td>11722 VA</td></tr><tr><td>Fase B</td><td>12682 VA</td></tr></tbody></table>
+<p class="sub">Desequilíbrio: 7,6%</p>
+
+<h2>4. Diagrama unifilar</h2>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 838" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+<rect width="100%" height="100%" fill="#fff"/>
+<style>.l{stroke:#24191a;stroke-width:2;fill:none}.t{fill:#24191a}.m{fill:#6b5d5f;font-size:11px}.b{fill:#fff;stroke:#24191a;stroke-width:2}.dr{fill:#fff;stroke:#7a1f2b;stroke-width:2}.vd{fill:#7a1f2b;font-weight:700;font-size:11px}</style>
+<text x="20" y="30" class="t" font-weight="700" font-size="15">Diagrama unifilar · Casa Exemplo</text>
+<text x="20" y="50" class="m">Alimentação bifásico 127/220 V · 2F + N + PE</text>
+<line x1="40" y1="100" x2="40" y2="140" class="l"/>
+<text x="50" y="112" class="m">Padrão de entrada (concessionária)</text>
+<line x1="40" y1="140" x2="250" y2="140" class="l"/>
+<rect x="80" y="128" width="46" height="24" class="b"/><text x="103" y="144" text-anchor="middle" class="t" font-size="11">DPS</text>
+<rect x="160" y="128" width="56" height="24" class="b"/><text x="188" y="144" text-anchor="middle" class="t" font-size="11">Geral</text>
+<line x1="250" y1="120" x2="250" y2="754" stroke="#24191a" stroke-width="5"/>
+<text x="258" y="116" class="m">Barramento do quadro (QD)</text>
+<line x1="250" y1="150" x2="750" y2="150" class="l"/>
+<rect x="280" y="137" width="62" height="26" rx="3" class="b"/>
+<text x="311" y="155" text-anchor="middle" class="t" font-size="12">1P 10 A</text>
+<text x="440" y="144" class="m">1,5 mm² · fase B</text>
+<circle cx="762" cy="150" r="13" fill="#1c060a"/>
+<text x="762" y="154" text-anchor="middle" fill="#e3c47a" font-weight="700" font-size="12">1</text>
+<text x="784" y="148" class="t">Iluminação · Sala, Cozinha, Área de serviço, Co…</text>
+<text x="784" y="164" class="m">1260 VA · 127 V · 9,9 A · queda 2,79%</text>
+<line x1="250" y1="204" x2="750" y2="204" class="l"/>
+<rect x="280" y="191" width="62" height="26" rx="3" class="b"/>
+<text x="311" y="209" text-anchor="middle" class="t" font-size="12">1P 13 A</text>
+<rect x="358" y="191" width="62" height="26" rx="3" class="dr"/>
+<text x="389" y="209" text-anchor="middle" class="vd">DR 30 mA</text>
+<text x="440" y="198" class="m">2,5 mm² · fase B</text>
+<circle cx="762" cy="204" r="13" fill="#1c060a"/>
+<text x="762" y="208" text-anchor="middle" fill="#e3c47a" font-weight="700" font-size="12">2</text>
+<text x="784" y="202" class="t">Tomadas · Cozinha</text>
+<text x="784" y="218" class="m">1400 VA · 127 V · 11,0 A · queda 0,50%</text>
+<line x1="250" y1="258" x2="750" y2="258" class="l"/>
+<rect x="280" y="245" width="62" height="26" rx="3" class="b"/>
+<text x="311" y="263" text-anchor="middle" class="t" font-size="12">1P 13 A</text>
+<rect x="358" y="245" width="62" height="26" rx="3" class="dr"/>
+<text x="389" y="263" text-anchor="middle" class="vd">DR 30 mA</text>
+<text x="440" y="252" class="m">2,5 mm² · fase B</text>
+<circle cx="762" cy="258" r="13" fill="#1c060a"/>
+<text x="762" y="262" text-anchor="middle" fill="#e3c47a" font-weight="700" font-size="12">3</text>
+<text x="784" y="256" class="t">Tomadas · Área de serviço</text>
+<text x="784" y="272" class="m">1300 VA · 127 V · 10,2 A · queda 0,81%</text>
+<line x1="250" y1="312" x2="750" y2="312" class="l"/>
+<rect x="280" y="299" width="62" height="26" rx="3" class="b"/>
+<text x="311" y="317" text-anchor="middle" class="t" font-size="12">1P 10 A</text>
+<text x="440" y="306" class="m">2,5 mm² · fase A</text>
+<circle cx="762" cy="312" r="13" fill="#1c060a"/>
+<text x="762" y="316" text-anchor="middle" fill="#e3c47a" font-weight="700" font-size="12">4</text>
+<text x="784" y="310" class="t">Tomadas · Sala, Corredor, Quarto 1, Quarto 2 (s…</text>
+<text x="784" y="326" class="m">1200 VA · 127 V · 9,4 A · queda 1,38%</text>
+<line x1="250" y1="366" x2="750" y2="366" class="l"/>
+<rect x="280" y="353" width="62" height="26" rx="3" class="b"/>
+<text x="311" y="371" text-anchor="middle" class="t" font-size="12">1P 13 A</text>
+<rect x="358" y="353" width="62" height="26" rx="3" class="dr"/>
+<text x="389" y="371" text-anchor="middle" class="vd">DR 30 mA</text>
+<text x="440" y="360" class="m">2,5 mm² · fase A</text>
+<circle cx="762" cy="366" r="13" fill="#1c060a"/>
+<text x="762" y="370" text-anchor="middle" fill="#e3c47a" font-weight="700" font-size="12">5</text>
+<text x="784" y="364" class="t">Tomadas · Banheiro social, Banheiro suíte, Vara…</text>
+<text x="784" y="380" class="m">1300 VA · 127 V · 10,2 A · queda 1,73%</text>
+<line x1="250" y1="420" x2="750" y2="420" class="l"/>
+<rect x="280" y="407" width="62" height="26" rx="3" class="b"/>
+<text x="311" y="425" text-anchor="middle" class="t" font-size="12">1P 13 A</text>
+<rect x="358" y="407" width="62" height="26" rx="3" class="dr"/>
+<text x="389" y="425" text-anchor="middle" class="vd">DR 30 mA</text>
+<text x="440" y="414" class="m">2,5 mm² · fase A</text>
+<circle cx="762" cy="420" r="13" fill="#1c060a"/>
+<text x="762" y="424" text-anchor="middle" fill="#e3c47a" font-weight="700" font-size="12">6</text>
+<text x="784" y="418" class="t">Micro-ondas · Cozinha</text>
+<text x="784" y="434" class="m">1500 VA · 127 V · 11,8 A · queda 0,53%</text>
+<line x1="250" y1="474" x2="750" y2="474" class="l"/>
+<rect x="280" y="461" width="62" height="26" rx="3" class="b"/>
+<text x="311" y="479" text-anchor="middle" class="t" font-size="12">2P 10 A</text>
+<rect x="358" y="461" width="62" height="26" rx="3" class="dr"/>
+<text x="389" y="479" text-anchor="middle" class="vd">DR 30 mA</text>
+<text x="440" y="468" class="m">2,5 mm² · fase AB</text>
+<circle cx="762" cy="474" r="13" fill="#1c060a"/>
+<text x="762" y="478" text-anchor="middle" fill="#e3c47a" font-weight="700" font-size="12">7</text>
+<text x="784" y="472" class="t">Forno elétrico · Cozinha</text>
+<text x="784" y="488" class="m">2000 VA · 220 V · 9,1 A · queda 0,24%</text>
+<line x1="250" y1="528" x2="750" y2="528" class="l"/>
+<rect x="280" y="515" width="62" height="26" rx="3" class="b"/>
+<text x="311" y="533" text-anchor="middle" class="t" font-size="12">1P 10 A</text>
+<rect x="358" y="515" width="62" height="26" rx="3" class="dr"/>
+<text x="389" y="533" text-anchor="middle" class="vd">DR 30 mA</text>
+<text x="440" y="522" class="m">2,5 mm² · fase B</text>
+<circle cx="762" cy="528" r="13" fill="#1c060a"/>
+<text x="762" y="532" text-anchor="middle" fill="#e3c47a" font-weight="700" font-size="12">8</text>
+<text x="784" y="526" class="t">Máquina de lavar · Área de serviço</text>
+<text x="784" y="542" class="m">1000 VA · 127 V · 7,9 A · queda 0,62%</text>
+<line x1="250" y1="582" x2="750" y2="582" class="l"/>
+<rect x="280" y="569" width="62" height="26" rx="3" class="b"/>
+<text x="311" y="587" text-anchor="middle" class="t" font-size="12">2P 6 A</text>
+<text x="440" y="576" class="m">2,5 mm² · fase AB</text>
+<circle cx="762" cy="582" r="13" fill="#1c060a"/>
+<text x="762" y="586" text-anchor="middle" fill="#e3c47a" font-weight="700" font-size="12">9</text>
+<text x="784" y="580" class="t">Ar-condicionado 12.000 BTU · Quarto 1</text>
+<text x="784" y="596" class="m">1222 VA · 220 V · 5,6 A · queda 0,36%</text>
+<line x1="250" y1="636" x2="750" y2="636" class="l"/>
+<rect x="280" y="623" width="62" height="26" rx="3" class="b"/>
+<text x="311" y="641" text-anchor="middle" class="t" font-size="12">2P 6 A</text>
+<text x="440" y="630" class="m">2,5 mm² · fase AB</text>
+<circle cx="762" cy="636" r="13" fill="#1c060a"/>
+<text x="762" y="640" text-anchor="middle" fill="#e3c47a" font-weight="700" font-size="12">10</text>
+<text x="784" y="634" class="t">Ar-condicionado 12.000 BTU · Quarto 2 (suíte)</text>
+<text x="784" y="650" class="m">1222 VA · 220 V · 5,6 A · queda 0,47%</text>
+<line x1="250" y1="690" x2="750" y2="690" class="l"/>
+<rect x="280" y="677" width="62" height="26" rx="3" class="b"/>
+<text x="311" y="695" text-anchor="middle" class="t" font-size="12">2P 25 A</text>
+<rect x="358" y="677" width="62" height="26" rx="3" class="dr"/>
+<text x="389" y="695" text-anchor="middle" class="vd">DR 30 mA</text>
+<text x="440" y="684" class="m">6 mm² · fase AB</text>
+<circle cx="762" cy="690" r="13" fill="#1c060a"/>
+<text x="762" y="694" text-anchor="middle" fill="#e3c47a" font-weight="700" font-size="12">11</text>
+<text x="784" y="688" class="t">Chuveiro · Banheiro social</text>
+<text x="784" y="704" class="m">5500 VA · 220 V · 25,0 A · queda 0,54%</text>
+<line x1="250" y1="744" x2="750" y2="744" class="l"/>
+<rect x="280" y="731" width="62" height="26" rx="3" class="b"/>
+<text x="311" y="749" text-anchor="middle" class="t" font-size="12">2P 25 A</text>
+<rect x="358" y="731" width="62" height="26" rx="3" class="dr"/>
+<text x="389" y="749" text-anchor="middle" class="vd">DR 30 mA</text>
+<text x="440" y="738" class="m">6 mm² · fase AB</text>
+<circle cx="762" cy="744" r="13" fill="#1c060a"/>
+<text x="762" y="748" text-anchor="middle" fill="#e3c47a" font-weight="700" font-size="12">12</text>
+<text x="784" y="742" class="t">Chuveiro · Banheiro suíte</text>
+<text x="784" y="758" class="m">5500 VA · 220 V · 25,0 A · queda 1,01%</text>
+</svg>
+
+<h2>5. Lista de materiais (estimativa)</h2>
+<table><thead><tr><th>Grupo</th><th>Item</th><th>Quantidade</th></tr></thead><tbody><tr><td>Proteção</td><td>Disjuntor termomagnético monopolar curva C 10 A</td><td>3 un</td></tr><tr><td>Proteção</td><td>Disjuntor termomagnético monopolar curva C 13 A</td><td>4 un</td></tr><tr><td>Proteção</td><td>Disjuntor termomagnético bipolar curva C 6 A</td><td>2 un</td></tr><tr><td>Proteção</td><td>Disjuntor termomagnético bipolar curva C 10 A</td><td>1 un</td></tr><tr><td>Proteção</td><td>Disjuntor termomagnético bipolar curva C 25 A</td><td>2 un</td></tr><tr><td>Proteção</td><td>Interruptor DR bipolar 25 A / 30 mA</td><td>8 un</td></tr><tr><td>Proteção</td><td>DPS classe II 275 V (um por fase e um para o neutro)</td><td>3 un</td></tr><tr><td>Proteção</td><td>Quadro de distribuição de embutir com barramento (mín. 47 módulos DIN)</td><td>1 un</td></tr><tr><td>Condutores</td><td>Cabo flexível 750 V 1,5 mm² (fase, neutro e terra — separar por cor)</td><td>52 m</td></tr><tr><td>Condutores</td><td>Cabo flexível 750 V 2,5 mm² (fase, neutro e terra — separar por cor)</td><td>266 m</td></tr><tr><td>Condutores</td><td>Cabo flexível 750 V 6 mm² (fase, neutro e terra — separar por cor)</td><td>80 m</td></tr><tr><td>Pontos</td><td>Tomada 2P+T 10 A (uso geral)</td><td>22 un</td></tr><tr><td>Pontos</td><td>Tomada 2P+T 20 A (uso específico)</td><td>2 un</td></tr><tr><td>Pontos</td><td>Ponto de luz no teto (caixa octogonal)</td><td>9 un</td></tr><tr><td>Pontos</td><td>Interruptor simples</td><td>9 un</td></tr><tr><td>Pontos</td><td>Caixa 4x2 para tomadas e interruptores</td><td>33 un</td></tr></tbody></table>
+<p class="sub">Cabos: distância do quadro × 3 condutores × 15% de margem. Eletrodutos, caixas de passagem e acabamentos não incluídos.</p>
+
+<h2>6. Observações</h2>
+<ul><li>Iluminação considerada no teto (≥ 2,50 m), por isso dispensada de DR (5.1.3.2.2).</li><li>Recomenda-se um DR geral ou por grupo de circuitos; aqui o DR foi indicado por circuito exigido.</li><li>Instalar DPS no quadro e garantir aterramento (esquema TN-S) com condutor de proteção em todos os pontos.</li><li>Disjuntor geral e padrão de entrada: dimensionar pela demanda conforme a norma da concessionária local.</li><li>Ar-condicionado, motores e bombas: confira o disjuntor e a bitola recomendados pelo fabricante (corrente de partida) e use o maior entre o calculado e o indicado.</li></ul>
+
+<footer><span>Gerado automaticamente a partir de <code>casa-exemplo.toml</code></span><span>Ítalo Fonteles · italofonteles.dev</span></footer>
+</body></html>

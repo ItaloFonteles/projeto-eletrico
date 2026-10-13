@@ -1,0 +1,116 @@
+# Casa térrea de exemplo: 2 quartos, 1 suíte, Boa Vista - RR
+# Para gerar:  python -m eletrica projetos/casa-exemplo.toml
+
+[projeto]
+nome = "Casa Exemplo"
+cliente = "Família Silva"
+cidade = "Boa Vista - RR"
+alimentacao = "bifasico"        # monofasico | bifasico | trifasico
+tensao_fn = 127                 # fase-neutro
+tensao_ff = 220                 # fase-fase
+temperatura_ambiente = 35       # Boa Vista: usar 35 °C (lado da segurança)
+circuitos_por_eletroduto = 3    # pior trecho (saída do quadro)
+
+# Cada cômodo: tipo, área (m²), perímetro (m) e distância aproximada do quadro (m).
+# Opcional: tomadas = N (se quiser mais que o mínimo), pontos_luz = N, [[comodos.equipamentos]].
+# Tipos: sala, dormitorio, cozinha, copa, area_servico, lavanderia, banheiro, varanda,
+#        corredor, garagem, escritorio, externa, outro
+
+[[comodos]]
+nome = "Sala"
+tipo = "sala"
+area = 18.0
+perimetro = 17.0
+distancia_quadro = 6
+tomadas = 5
+
+[[comodos]]
+nome = "Cozinha"
+tipo = "cozinha"
+area = 10.5
+perimetro = 13.0
+distancia_quadro = 4
+
+  [[comodos.equipamentos]]
+  nome = "Micro-ondas"
+  potencia_w = 1500
+
+  [[comodos.equipamentos]]
+  nome = "Forno elétrico"
+  potencia_w = 2000
+  tensao = 220
+
+[[comodos]]
+nome = "Área de serviço"
+tipo = "area_servico"
+area = 5.0
+perimetro = 9.0
+distancia_quadro = 7
+
+  [[comodos.equipamentos]]
+  nome = "Máquina de lavar"
+  potencia_w = 1000
+
+[[comodos]]
+nome = "Corredor"
+tipo = "corredor"
+area = 4.0
+perimetro = 10.0
+distancia_quadro = 5
+
+[[comodos]]
+nome = "Quarto 1"
+tipo = "dormitorio"
+area = 10.24
+perimetro = 12.8
+distancia_quadro = 10
+
+  [[comodos.equipamentos]]
+  nome = "Ar-condicionado 12.000 BTU"
+  potencia_w = 1100
+  tensao = 220
+  fp = 0.9
+
+[[comodos]]
+nome = "Quarto 2 (suíte)"
+tipo = "dormitorio"
+area = 12.25
+perimetro = 14.0
+distancia_quadro = 13
+
+  [[comodos.equipamentos]]
+  nome = "Ar-condicionado 12.000 BTU"
+  potencia_w = 1100
+  tensao = 220
+  fp = 0.9
+
+[[comodos]]
+nome = "Banheiro social"
+tipo = "banheiro"
+area = 3.6
+perimetro = 7.8
+distancia_quadro = 8
+
+  [[comodos.equipamentos]]
+  nome = "Chuveiro"
+  potencia_w = 5500
+  tensao = 220
+
+[[comodos]]
+nome = "Banheiro suíte"
+tipo = "banheiro"
+area = 3.2
+perimetro = 7.2
+distancia_quadro = 15
+
+  [[comodos.equipamentos]]
+  nome = "Chuveiro"
+  potencia_w = 5500
+  tensao = 220
+
+[[comodos]]
+nome = "Varanda"
+tipo = "varanda"
+area = 8.0
+perimetro = 12.0
+distancia_quadro = 9

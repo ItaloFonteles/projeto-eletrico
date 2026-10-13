@@ -1,0 +1,525 @@
+{
+  "projeto": {
+    "nome": "Casa Exemplo",
+    "cliente": "Família Silva",
+    "cidade": "Boa Vista - RR",
+    "alimentacao": "bifasico",
+    "tensao_fn": 127,
+    "tensao_ff": 220,
+    "temperatura_ambiente": 35,
+    "circuitos_por_eletroduto": 3,
+    "responsavel": "Ítalo Fonteles · italofonteles.dev",
+    "corrente_max_iluminacao": 10,
+    "corrente_max_tomadas": 13,
+    "arquivo": "casa-exemplo.toml"
+  },
+  "comodos": [
+    {
+      "nome": "Sala",
+      "tipo": "sala",
+      "area": 18.0,
+      "perimetro": 17.0,
+      "il_va": 280,
+      "tug_pontos": 5,
+      "tug_va": [
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "equipamentos": []
+    },
+    {
+      "nome": "Cozinha",
+      "tipo": "cozinha",
+      "area": 10.5,
+      "perimetro": 13.0,
+      "il_va": 160,
+      "tug_pontos": 4,
+      "tug_va": [
+        600,
+        600,
+        100,
+        100
+      ],
+      "equipamentos": [
+        {
+          "nome": "Micro-ondas",
+          "va": 1500,
+          "tensao": 127
+        },
+        {
+          "nome": "Forno elétrico",
+          "va": 2000,
+          "tensao": 220
+        }
+      ]
+    },
+    {
+      "nome": "Área de serviço",
+      "tipo": "area_servico",
+      "area": 5.0,
+      "perimetro": 9.0,
+      "il_va": 100,
+      "tug_pontos": 3,
+      "tug_va": [
+        600,
+        600,
+        100
+      ],
+      "equipamentos": [
+        {
+          "nome": "Máquina de lavar",
+          "va": 1000,
+          "tensao": 127
+        }
+      ]
+    },
+    {
+      "nome": "Corredor",
+      "tipo": "corredor",
+      "area": 4.0,
+      "perimetro": 10.0,
+      "il_va": 100,
+      "tug_pontos": 1,
+      "tug_va": [
+        100
+      ],
+      "equipamentos": []
+    },
+    {
+      "nome": "Quarto 1",
+      "tipo": "dormitorio",
+      "area": 10.24,
+      "perimetro": 12.8,
+      "il_va": 160,
+      "tug_pontos": 3,
+      "tug_va": [
+        100,
+        100,
+        100
+      ],
+      "equipamentos": [
+        {
+          "nome": "Ar-condicionado 12.000 BTU",
+          "va": 1222,
+          "tensao": 220
+        }
+      ]
+    },
+    {
+      "nome": "Quarto 2 (suíte)",
+      "tipo": "dormitorio",
+      "area": 12.25,
+      "perimetro": 14.0,
+      "il_va": 160,
+      "tug_pontos": 3,
+      "tug_va": [
+        100,
+        100,
+        100
+      ],
+      "equipamentos": [
+        {
+          "nome": "Ar-condicionado 12.000 BTU",
+          "va": 1222,
+          "tensao": 220
+        }
+      ]
+    },
+    {
+      "nome": "Banheiro social",
+      "tipo": "banheiro",
+      "area": 3.6,
+      "perimetro": 7.8,
+      "il_va": 100,
+      "tug_pontos": 1,
+      "tug_va": [
+        600
+      ],
+      "equipamentos": [
+        {
+          "nome": "Chuveiro",
+          "va": 5500,
+          "tensao": 220
+        }
+      ]
+    },
+    {
+      "nome": "Banheiro suíte",
+      "tipo": "banheiro",
+      "area": 3.2,
+      "perimetro": 7.2,
+      "il_va": 100,
+      "tug_pontos": 1,
+      "tug_va": [
+        600
+      ],
+      "equipamentos": [
+        {
+          "nome": "Chuveiro",
+          "va": 5500,
+          "tensao": 220
+        }
+      ]
+    },
+    {
+      "nome": "Varanda",
+      "tipo": "varanda",
+      "area": 8.0,
+      "perimetro": 12.0,
+      "il_va": 100,
+      "tug_pontos": 1,
+      "tug_va": [
+        100
+      ],
+      "equipamentos": []
+    }
+  ],
+  "circuitos": [
+    {
+      "numero": 1,
+      "tipo": "iluminacao",
+      "descricao": "Iluminação · Sala, Cozinha, Área de serviço, Corredor, Quarto 1, Quarto 2 (suíte), Banheiro social, Banheiro suíte, Varanda",
+      "tensao": 127,
+      "comodos": [
+        "Sala",
+        "Cozinha",
+        "Área de serviço",
+        "Corredor",
+        "Quarto 1",
+        "Quarto 2 (suíte)",
+        "Banheiro social",
+        "Banheiro suíte",
+        "Varanda"
+      ],
+      "va": 1260,
+      "distancia": 15,
+      "exige_dr": false,
+      "corrente": 9.92,
+      "disjuntor": 10,
+      "polos": 1,
+      "secao": 1.5,
+      "capacidade": 11.5,
+      "queda": 2.79,
+      "fases": "B"
+    },
+    {
+      "numero": 2,
+      "tipo": "tomadas",
+      "descricao": "Tomadas · Cozinha",
+      "tensao": 127,
+      "comodos": [
+        "Cozinha"
+      ],
+      "va": 1400,
+      "distancia": 4,
+      "exige_dr": true,
+      "corrente": 11.02,
+      "disjuntor": 13,
+      "polos": 1,
+      "secao": 2.5,
+      "capacidade": 15.8,
+      "queda": 0.5,
+      "fases": "B"
+    },
+    {
+      "numero": 3,
+      "tipo": "tomadas",
+      "descricao": "Tomadas · Área de serviço",
+      "tensao": 127,
+      "comodos": [
+        "Área de serviço"
+      ],
+      "va": 1300,
+      "distancia": 7,
+      "exige_dr": true,
+      "corrente": 10.24,
+      "disjuntor": 13,
+      "polos": 1,
+      "secao": 2.5,
+      "capacidade": 15.8,
+      "queda": 0.81,
+      "fases": "B"
+    },
+    {
+      "numero": 4,
+      "tipo": "tomadas",
+      "descricao": "Tomadas · Sala, Corredor, Quarto 1, Quarto 2 (suíte)",
+      "tensao": 127,
+      "comodos": [
+        "Sala",
+        "Corredor",
+        "Quarto 1",
+        "Quarto 2 (suíte)"
+      ],
+      "va": 1200,
+      "distancia": 13,
+      "exige_dr": false,
+      "corrente": 9.45,
+      "disjuntor": 10,
+      "polos": 1,
+      "secao": 2.5,
+      "capacidade": 15.8,
+      "queda": 1.38,
+      "fases": "A"
+    },
+    {
+      "numero": 5,
+      "tipo": "tomadas",
+      "descricao": "Tomadas · Banheiro social, Banheiro suíte, Varanda",
+      "tensao": 127,
+      "comodos": [
+        "Banheiro social",
+        "Banheiro suíte",
+        "Varanda"
+      ],
+      "va": 1300,
+      "distancia": 15,
+      "exige_dr": true,
+      "corrente": 10.24,
+      "disjuntor": 13,
+      "polos": 1,
+      "secao": 2.5,
+      "capacidade": 15.8,
+      "queda": 1.73,
+      "fases": "A"
+    },
+    {
+      "numero": 6,
+      "tipo": "tue",
+      "descricao": "Micro-ondas · Cozinha",
+      "tensao": 127,
+      "comodos": [
+        "Cozinha"
+      ],
+      "va": 1500,
+      "distancia": 4,
+      "exige_dr": true,
+      "corrente": 11.81,
+      "disjuntor": 13,
+      "polos": 1,
+      "secao": 2.5,
+      "capacidade": 15.8,
+      "queda": 0.53,
+      "fases": "A"
+    },
+    {
+      "numero": 7,
+      "tipo": "tue",
+      "descricao": "Forno elétrico · Cozinha",
+      "tensao": 220,
+      "comodos": [
+        "Cozinha"
+      ],
+      "va": 2000,
+      "distancia": 4,
+      "exige_dr": true,
+      "corrente": 9.09,
+      "disjuntor": 10,
+      "polos": 2,
+      "secao": 2.5,
+      "capacidade": 15.8,
+      "queda": 0.24,
+      "fases": "AB"
+    },
+    {
+      "numero": 8,
+      "tipo": "tue",
+      "descricao": "Máquina de lavar · Área de serviço",
+      "tensao": 127,
+      "comodos": [
+        "Área de serviço"
+      ],
+      "va": 1000,
+      "distancia": 7,
+      "exige_dr": true,
+      "corrente": 7.87,
+      "disjuntor": 10,
+      "polos": 1,
+      "secao": 2.5,
+      "capacidade": 15.8,
+      "queda": 0.62,
+      "fases": "B"
+    },
+    {
+      "numero": 9,
+      "tipo": "tue",
+      "descricao": "Ar-condicionado 12.000 BTU · Quarto 1",
+      "tensao": 220,
+      "comodos": [
+        "Quarto 1"
+      ],
+      "va": 1222,
+      "distancia": 10,
+      "exige_dr": false,
+      "corrente": 5.55,
+      "disjuntor": 6,
+      "polos": 2,
+      "secao": 2.5,
+      "capacidade": 15.8,
+      "queda": 0.36,
+      "fases": "AB"
+    },
+    {
+      "numero": 10,
+      "tipo": "tue",
+      "descricao": "Ar-condicionado 12.000 BTU · Quarto 2 (suíte)",
+      "tensao": 220,
+      "comodos": [
+        "Quarto 2 (suíte)"
+      ],
+      "va": 1222,
+      "distancia": 13,
+      "exige_dr": false,
+      "corrente": 5.55,
+      "disjuntor": 6,
+      "polos": 2,
+      "secao": 2.5,
+      "capacidade": 15.8,
+      "queda": 0.47,
+      "fases": "AB"
+    },
+    {
+      "numero": 11,
+      "tipo": "tue",
+      "descricao": "Chuveiro · Banheiro social",
+      "tensao": 220,
+      "comodos": [
+        "Banheiro social"
+      ],
+      "va": 5500,
+      "distancia": 8,
+      "exige_dr": true,
+      "corrente": 25.0,
+      "disjuntor": 25,
+      "polos": 2,
+      "secao": 6,
+      "capacidade": 27.0,
+      "queda": 0.54,
+      "fases": "AB"
+    },
+    {
+      "numero": 12,
+      "tipo": "tue",
+      "descricao": "Chuveiro · Banheiro suíte",
+      "tensao": 220,
+      "comodos": [
+        "Banheiro suíte"
+      ],
+      "va": 5500,
+      "distancia": 15,
+      "exige_dr": true,
+      "corrente": 25.0,
+      "disjuntor": 25,
+      "polos": 2,
+      "secao": 6,
+      "capacidade": 27.0,
+      "queda": 1.01,
+      "fases": "AB"
+    }
+  ],
+  "carga_fases": {
+    "A": 11722,
+    "B": 12682
+  },
+  "materiais": [
+    {
+      "grupo": "Proteção",
+      "descricao": "Disjuntor termomagnético monopolar curva C 10 A",
+      "quantidade": 3,
+      "unidade": "un"
+    },
+    {
+      "grupo": "Proteção",
+      "descricao": "Disjuntor termomagnético monopolar curva C 13 A",
+      "quantidade": 4,
+      "unidade": "un"
+    },
+    {
+      "grupo": "Proteção",
+      "descricao": "Disjuntor termomagnético bipolar curva C 6 A",
+      "quantidade": 2,
+      "unidade": "un"
+    },
+    {
+      "grupo": "Proteção",
+      "descricao": "Disjuntor termomagnético bipolar curva C 10 A",
+      "quantidade": 1,
+      "unidade": "un"
+    },
+    {
+      "grupo": "Proteção",
+      "descricao": "Disjuntor termomagnético bipolar curva C 25 A",
+      "quantidade": 2,
+      "unidade": "un"
+    },
+    {
+      "grupo": "Proteção",
+      "descricao": "Interruptor DR bipolar 25 A / 30 mA",
+      "quantidade": 8,
+      "unidade": "un"
+    },
+    {
+      "grupo": "Proteção",
+      "descricao": "DPS classe II 275 V (um por fase e um para o neutro)",
+      "quantidade": 3,
+      "unidade": "un"
+    },
+    {
+      "grupo": "Proteção",
+      "descricao": "Quadro de distribuição de embutir com barramento (mín. 47 módulos DIN)",
+      "quantidade": 1,
+      "unidade": "un"
+    },
+    {
+      "grupo": "Condutores",
+      "descricao": "Cabo flexível 750 V 1,5 mm² (fase, neutro e terra — separar por cor)",
+      "quantidade": 52,
+      "unidade": "m"
+    },
+    {
+      "grupo": "Condutores",
+      "descricao": "Cabo flexível 750 V 2,5 mm² (fase, neutro e terra — separar por cor)",
+      "quantidade": 266,
+      "unidade": "m"
+    },
+    {
+      "grupo": "Condutores",
+      "descricao": "Cabo flexível 750 V 6 mm² (fase, neutro e terra — separar por cor)",
+      "quantidade": 80,
+      "unidade": "m"
+    },
+    {
+      "grupo": "Pontos",
+      "descricao": "Tomada 2P+T 10 A (uso geral)",
+      "quantidade": 22,
+      "unidade": "un"
+    },
+    {
+      "grupo": "Pontos",
+      "descricao": "Tomada 2P+T 20 A (uso específico)",
+      "quantidade": 2,
+      "unidade": "un"
+    },
+    {
+      "grupo": "Pontos",
+      "descricao": "Ponto de luz no teto (caixa octogonal)",
+      "quantidade": 9,
+      "unidade": "un"
+    },
+    {
+      "grupo": "Pontos",
+      "descricao": "Interruptor simples",
+      "quantidade": 9,
+      "unidade": "un"
+    },
+    {
+      "grupo": "Pontos",
+      "descricao": "Caixa 4x2 para tomadas e interruptores",
+      "quantidade": 33,
+      "unidade": "un"
+    }
+  ]
+}

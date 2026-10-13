@@ -10,6 +10,16 @@ Como o projeto é um arquivo de texto versionado no **Git**, cada revisão fica 
 
 ---
 
+## Formulário web (sem instalar nada)
+
+🔗 **https://italofonteles.github.io/projeto-eletrico/**
+
+- Preencha os cômodos com **largura × comprimento** (área e perímetro são calculados) ou marque "cômodo irregular".
+- Escolha os aparelhos numa lista pronta: chuveiros, ar-condicionado de 9 a 24 mil BTU, micro-ondas, forno, cooktop, máquina de lavar, bomba d'água…
+- Clique em **Gerar projeto**: o relatório aparece na tela, com botões para **PDF**, **unifilar (SVG)**, **materiais (CSV)** e o **arquivo `.toml`**, que vai para o Git.
+- O formulário roda **o mesmo código Python** da pasta `eletrica/` dentro do navegador ([Pyodide](https://pyodide.org)). Os números são os mesmos da linha de comando e dos testes, e nada é enviado para servidor nenhum.
+- O rascunho fica salvo no navegador, e dá para reabrir um `.toml` para editar.
+
 ## Exemplo
 
 O arquivo [`projetos/casa-exemplo.toml`](projetos/casa-exemplo.toml) descreve uma casa com 2 quartos, 2 banheiros, cozinha, área de serviço e varanda em Boa Vista - RR. O resultado está em [`saida/casa-exemplo/`](saida/casa-exemplo/):
@@ -41,6 +51,7 @@ circuitos_por_eletroduto = 3   # pior trecho, na saída do quadro
 nome = "Banheiro"
 tipo = "banheiro"              # sala, dormitorio, cozinha, copa, area_servico, lavanderia, banheiro,
 area = 3.6                     # varanda, corredor, garagem, escritorio, externa, outro
+                               # (ou, se for retangular: largura = 2.0 e comprimento = 1.8)
 perimetro = 7.8
 distancia_quadro = 8           # metros, do quadro até o cômodo (para a queda de tensão)
 # tomadas = 2                  # opcional: mais tomadas que o mínimo
@@ -102,12 +113,13 @@ git tag casa-maria-rev-B                             # marca a versão entregue
 docker run --rm -v "${PWD}:/p" -w /p python:3.12-slim python -m unittest -v
 ```
 
-17 testes cobrem as regras da norma (iluminação, quantidade e potência das tomadas, exceção de mais de 6 tomadas molhadas), o dimensionamento (chuveiro, queda de tensão, seções mínimas, In ≤ Iz, DR), o balanço de fases e a geração dos arquivos.
+18 testes cobrem as regras da norma (iluminação, quantidade e potência das tomadas, exceção de mais de 6 tomadas molhadas), o dimensionamento (chuveiro, queda de tensão, seções mínimas, In ≤ Iz, DR), o balanço de fases e a geração dos arquivos.
 
 ## Estrutura
 
 ```
 projeto-eletrico/
+├── index.html + app.js # formulário web (GitHub Pages)
 ├── eletrica/
 │   ├── norma.py       # tabelas e regras da NBR 5410
 │   ├── projeto.py     # leitura/validação do .toml e previsão de cargas

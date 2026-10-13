@@ -49,6 +49,10 @@ def preparar(dados: dict) -> dict:
     nomes = set()
     for i, c in enumerate(comodos, 1):
         rotulo = f"cômodo #{i} ({c.get('nome', '?')})"
+        # Cômodo retangular: dá para informar só largura e comprimento
+        if "area" not in c and c.get("largura") and c.get("comprimento"):
+            c["area"] = round(c["largura"] * c["comprimento"], 2)
+            c["perimetro"] = round(2 * (c["largura"] + c["comprimento"]), 2)
         for campo in ("nome", "tipo", "area", "perimetro", "distancia_quadro"):
             if campo not in c:
                 erros.append(f"{rotulo}: falta '{campo}'")

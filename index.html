@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projeto Elétrico · Pré-dimensionamento NBR 5410</title>
+  <meta name="description" content="Formulário de pré-dimensionamento de instalação elétrica residencial pela NBR 5410: cargas, circuitos, disjuntores, bitolas, DR, unifilar e lista de materiais.">
+  <link rel="icon" href="https://italofonteles.dev/favicon.svg" type="image/svg+xml">
+  <style>
+    :root {
+      --vinho: #7a1f2b; --vinho-escuro: #2e0b12; --dourado: #c9a24b; --dourado-claro: #e3c47a;
+      --bg: #f4ecdc; --card: #fbf7ef; --borda: #e3d3b4; --texto: #24191a; --suave: #6b5d5f; --erro: #b42318;
+    }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    body { margin: 0; font-family: "Segoe UI", system-ui, Arial, sans-serif; background: var(--bg); color: var(--texto); }
+    header.topo { background: linear-gradient(120deg, var(--vinho-escuro), var(--vinho)); color: #fff; padding: 22px 16px;
+                  border-bottom: 3px solid var(--dourado); }
+    .conteiner { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+    header.topo h1 { margin: 0; font-size: clamp(1.3rem, 4vw, 1.8rem); }
+    header.topo p { margin: 6px 0 0; color: #e7d3d6; }
+    main { padding: 20px 0 60px; }
+    .aviso { background: #fff4e5; border-left: 4px solid #b7791f; padding: 10px 14px; border-radius: 6px; margin-bottom: 18px; font-size: .93rem; }
+    section.bloco { background: var(--card); border: 1px solid var(--borda); border-radius: 12px; padding: 18px; margin-bottom: 18px; }
+    h2 { margin: 0 0 12px; font-size: 1.05rem; color: var(--vinho); text-transform: uppercase; letter-spacing: 1px; }
+    .grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+    label { display: flex; flex-direction: column; gap: 4px; font-size: .85rem; color: var(--suave); font-weight: 600; }
+    input, select { font: inherit; padding: 9px 10px; border: 1px solid var(--borda); border-radius: 8px; background: #fff; color: var(--texto); min-width: 0; }
+    input:focus, select:focus { outline: 2px solid var(--dourado); border-color: var(--dourado); }
+    .comodo { border: 1px solid var(--borda); border-left: 4px solid var(--dourado); border-radius: 10px; padding: 14px; margin-bottom: 12px; background: #fff; }
+    .comodo-topo { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .comodo-topo b { color: var(--vinho); }
+    .calc { font-size: .85rem; color: var(--suave); margin-top: 8px; }
+    .equipamentos { margin-top: 10px; }
+    .equip { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 8px; align-items: end; margin-top: 8px; }
+    .linha-botoes { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    button { font: inherit; cursor: pointer; border-radius: 8px; border: 1px solid transparent; padding: 9px 14px; font-weight: 600; }
+    .primario { background: var(--vinho); color: #fff; }
+    .primario:hover { background: #5a1520; }
+    .primario:disabled { background: #b9a4a7; cursor: wait; }
+    .secundario { background: #fff; border-color: var(--borda); color: var(--texto); }
+    .secundario:hover { border-color: var(--vinho); color: var(--vinho); }
+    .remover { background: none; color: var(--erro); padding: 6px 8px; }
+    .acoes-finais { position: sticky; bottom: 0; background: rgba(244, 236, 220, .95); backdrop-filter: blur(6px);
+                    padding: 12px 0; border-top: 1px solid var(--borda); display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    #status { font-size: .9rem; color: var(--suave); }
+    #status.erro { color: var(--erro); white-space: pre-wrap; }
+    #resultado { display: none; }
+    #resultado iframe { width: 100%; height: 80vh; border: 1px solid var(--borda); border-radius: 10px; background: #fff; }
+    .downloads { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .dica { font-size: .82rem; color: var(--suave); font-weight: 400; }
+    footer { text-align: center; color: var(--suave); font-size: .85rem; padding: 20px 0 40px; }
+    footer a { color: var(--vinho); font-weight: 600; }
+    @media (max-width: 640px) {
+      .equip { grid-template-columns: 1fr 1fr; }
+      .equip label:first-child { grid-column: 1 / -1; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topo">
+    <div class="conteiner">
+      <h1>⚡ Pré-dimensionamento elétrico residencial</h1>
+      <p>Preencha os cômodos e os aparelhos. O cálculo segue a ABNT NBR 5410 e roda no seu navegador.</p>
+    </div>
+  </header>
+
+  <main class="conteiner">
+    <div class="aviso"><b>Importante:</b> ferramenta de pré-dimensionamento para estudo e orçamento.
+      <b>Não substitui o projeto elétrico</b> assinado por profissional habilitado (ART/TRT).</div>
+
+    <section class="bloco">
+      <h2>1. Dados da obra</h2>
+      <div class="grade">
+        <label>Nome da obra <input id="p-nome" value="Minha casa"></label>
+        <label>Cliente <input id="p-cliente" placeholder="opcional"></label>
+        <label>Cidade <input id="p-cidade" value="Boa Vista - RR"></label>
+        <label>Alimentação
+          <select id="p-alimentacao">
+            <option value="monofasico">Monofásica (F + N)</option>
+            <option value="bifasico" selected>Bifásica (2F + N)</option>
+            <option value="trifasico">Trifásica (3F + N)</option>
+          </select>
+        </label>
+        <label>Tensão fase-neutro (V)
+          <select id="p-tensao">
+            <option value="127-220" selected>127 V (127/220)</option>
+            <option value="220-380">220 V (220/380)</option>
+          </select>
+        </label>
+        <label>Temperatura ambiente (°C) <input id="p-temperatura" type="number" value="35" min="10" max="50">
+          <span class="dica">Boa Vista: 35 °C</span></label>
+        <label>Circuitos no mesmo eletroduto <input id="p-agrupamento" type="number" value="3" min="1" max="20">
+          <span class="dica">pior trecho, na saída do quadro</span></label>
+      </div>
+    </section>
+
+    <section class="bloco">
+      <h2>2. Cômodos</h2>
+      <div id="comodos"></div>
+      <div class="linha-botoes">
+        <button type="button" class="secundario" id="add-comodo">+ Adicionar cômodo</button>
+        <button type="button" class="secundario" id="carregar-exemplo">Carregar casa de exemplo</button>
+        <label class="secundario" style="flex-direction:row;align-items:center;padding:9px 14px;border:1px solid var(--borda);border-radius:8px;background:#fff;cursor:pointer;color:var(--texto)">
+          Abrir arquivo .toml <input type="file" id="abrir-toml" accept=".toml" hidden></label>
+      </div>
+    </section>
+
+    <div class="acoes-finais">
+      <button type="button" class="primario" id="gerar" disabled>Carregando o cálculo…</button>
+      <span id="status">Baixando o motor de cálculo (Python), só na primeira vez…</span>
+    </div>
+
+    <section class="bloco" id="resultado">
+      <h2>3. Resultado</h2>
+      <div class="downloads">
+        <button type="button" class="primario" id="imprimir">Imprimir / salvar PDF</button>
+        <button type="button" class="secundario" data-baixar="relatorio">Relatório (.html)</button>
+        <button type="button" class="secundario" data-baixar="unifilar">Unifilar (.svg)</button>
+        <button type="button" class="secundario" data-baixar="materiais">Materiais (.csv)</button>
+        <button type="button" class="secundario" data-baixar="toml">Projeto (.toml para o Git)</button>
+      </div>
+      <iframe id="relatorio" title="Relatório do pré-dimensionamento"></iframe>
+    </section>
+  </main>
+
+  <footer>Feito por <a href="https://italofonteles.dev">Ítalo Fonteles</a> ·
+    <a href="https://github.com/ItaloFonteles/projeto-eletrico">código no GitHub</a></footer>
+
+  <template id="tpl-comodo">
+    <div class="comodo">
+      <div class="comodo-topo"><b class="titulo">Cômodo</b>
+        <button type="button" class="remover" data-acao="remover-comodo">Remover</button></div>
+      <div class="grade">
+        <label>Nome <input data-c="nome"></label>
+        <label>Tipo
+          <select data-c="tipo">
+            <option value="sala">Sala</option><option value="dormitorio">Quarto</option>
+            <option value="cozinha">Cozinha</option><option value="copa">Copa</option>
+            <option value="area_servico">Área de serviço</option><option value="lavanderia">Lavanderia</option>
+            <option value="banheiro">Banheiro</option><option value="varanda">Varanda</option>
+            <option value="corredor">Corredor / hall</option><option value="garagem">Garagem</option>
+            <option value="escritorio">Escritório</option><option value="externa">Área externa</option>
+            <option value="outro">Outro</option>
+          </select>
+        </label>
+        <label>Largura (m) <input data-c="largura" type="number" step="0.01" min="0.5"></label>
+        <label>Comprimento (m) <input data-c="comprimento" type="number" step="0.01" min="0.5"></label>
+        <label>Distância até o quadro (m) <input data-c="distancia" type="number" step="0.5" min="1" value="8"></label>
+        <label>Tomadas <input data-c="tomadas" type="number" min="1" placeholder="mínimo da norma">
+          <span class="dica">vazio = mínimo da norma</span></label>
+      </div>
+      <label style="flex-direction:row;align-items:center;gap:8px;margin-top:10px;font-weight:400">
+        <input type="checkbox" data-c="manual"> Cômodo irregular: informar área e perímetro direto</label>
+      <div class="grade manual" hidden style="margin-top:8px">
+        <label>Área (m²) <input data-c="area" type="number" step="0.01"></label>
+        <label>Perímetro (m) <input data-c="perimetro" type="number" step="0.01"></label>
+      </div>
+      <div class="calc"></div>
+      <div class="equipamentos"></div>
+      <div class="linha-botoes">
+        <select data-acao="preset" aria-label="Adicionar aparelho">
+          <option value="">+ Adicionar aparelho de uso específico…</option>
+        </select>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-equip">
+    <div class="equip">
+      <label>Aparelho <input data-e="nome"></label>
+      <label>Potência (W) <input data-e="potencia" type="number" min="1"></label>
+      <label>Tensão
+        <select data-e="tensao"><option value="fn">Fase-neutro</option><option value="ff">Fase-fase</option></select></label>
+      <label>Fator de potência <input data-e="fp" type="number" step="0.01" min="0.5" max="1" value="1"></label>
+      <button type="button" class="remover" data-acao="remover-equip" aria-label="Remover aparelho">✕</button>
+    </div>
+  </template>
+
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

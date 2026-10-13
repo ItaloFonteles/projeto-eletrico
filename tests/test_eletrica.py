@@ -112,6 +112,10 @@ class TestEntradaESaida(unittest.TestCase):
         with self.assertRaises(ErroProjeto):
             projeto(b, alimentacao="monofasico")
 
+    def test_largura_e_comprimento_viram_area_e_perimetro(self):
+        d = projeto({"nome": "Quarto", "tipo": "dormitorio", "largura": 3, "comprimento": 4, "distancia_quadro": 5})
+        self.assertEqual((d["comodos"][0]["area"], d["comodos"][0]["perimetro"]), (12, 14))
+
     def test_tipo_invalido_e_erro(self):
         with self.assertRaises(ErroProjeto):
             projeto(SALA | {"tipo": "sotao"})

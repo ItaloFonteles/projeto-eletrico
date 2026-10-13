@@ -40,7 +40,7 @@ def csv_materiais(materiais) -> str:
     return buf.getvalue()
 
 
-def html(dados, resultado, materiais, svg) -> str:
+def html(dados, resultado, materiais, svg, planta_svg="") -> str:
     p, comodos, circuitos = dados["projeto"], dados["comodos"], resultado["circuitos"]
     total_il = sum(c["il_va"] for c in comodos)
     total_tug = sum(sum(c["tug_va"]) for c in comodos)
@@ -136,14 +136,18 @@ Critérios: In ≥ Ib, In ≤ Iz, seção mínima (1,5 mm² luz / 2,5 mm² forç
 <table style="max-width:420px"><tbody>{linhas_fases}</tbody></table>
 {'<p class="sub">Desequilíbrio: ' + br(resultado['desequilibrio']) + '%</p>' if len(resultado['carga_fases']) > 1 else ''}
 
-<h2>4. Diagrama unifilar</h2>
+<h2>4. Planta de pontos (esquemática)</h2>
+{planta_svg}
+<p class="sub">Pontos posicionados automaticamente: luz no centro do teto, tomadas distribuídas pelas paredes e interruptor no canto mais próximo do quadro. O número junto a cada ponto é o circuito.</p>
+
+<h2>5. Diagrama unifilar</h2>
 {svg}
 
-<h2>5. Lista de materiais (estimativa)</h2>
+<h2>6. Lista de materiais (estimativa)</h2>
 <table><thead><tr><th>Grupo</th><th>Item</th><th>Quantidade</th></tr></thead><tbody>{linhas_mat}</tbody></table>
 <p class="sub">Cabos: distância do quadro × 3 condutores × 15% de margem. Eletrodutos, caixas de passagem e acabamentos não incluídos.</p>
 
-<h2>6. Observações</h2>
+<h2>7. Observações</h2>
 <ul>{''.join(f'<li>{escape(a)}</li>' for a in avisos)}</ul>
 
 <footer><span>Gerado automaticamente a partir de <code>{escape(p.get('arquivo', 'projeto.toml'))}</code></span><span>{escape(p['responsavel'])}</span></footer>

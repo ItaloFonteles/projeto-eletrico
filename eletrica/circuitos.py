@@ -21,10 +21,11 @@ class Circuito:
     capacidade: float = 0.0      # corrente que o condutor suporta já com os fatores de correção
     queda: float = 0.0
     fases: str = ""
+    pontos: list = field(default_factory=list)  # [cômodo, "luz"|"tug"|"tue", índice] — usado na planta
 
 
 def _empacotar(itens, limite_va):
-    """Agrupa (cômodo, va) em blocos sem passar do limite, mantendo a ordem da casa."""
+    """Agrupa (cômodo, va, índice) em blocos sem passar do limite, mantendo a ordem da casa."""
     grupos, atual, soma = [], [], 0
     for item in itens:
         if atual and soma + item[1] > limite_va:
@@ -49,33 +50,36 @@ def dividir(dados: dict) -> list[Circuito]:
     tipo = {c["nome"]: c["tipo"] for c in comodos}
     circuitos = []
 
-    def novo(tipo_c, prefixo, grupo, tensao):
-        nomes = [nome for nome, _ in grupo]
+    def novo(tipo_c, prefixo, grupo, tensao, tipo_ponto):
+        nomes = [nome for nome, _, _ in grupo]
         c = Circuito(len(circuitos) + 1, tipo_c, _descrever(prefixo, nomes), tensao, list(dict.fromkeys(nomes)),
-                     sum(va for _, va in grupo), max(distancia[n] for n in nomes))
+                     sum(va for _, va, _ in grupo), max(distancia[n] for n in nomes))
+        c.pontos = [[nome, tipo_ponto, i] for nome, _, i in grupo]
         # Iluminação no teto (≥ 2,5 m) fica fora da exigência de DR (5.1.3.2.2)
         c.exige_dr = tipo_c != "iluminacao" and any(tipo[n] in norma.LOCAIS_DR for n in nomes)
         circuitos.append(c)
 
-    # 1) Iluminação
-    luz = [(c["nome"], c["il_va"]) for c in comodos]
+    # 1) Iluminação (todos os pontos de luz do cômodo no mesmo circuito)
+    luz = [(c["nome"], c["il_va"], 0) for c in comodos]
     for g in _empacotar(luz, p["corrente_max_iluminacao"] * vfn):
-        novo("iluminacao", "Iluminação", g, vfn)
+        novo("iluminacao", "Iluminação", g, vfn, "luz")
 
     # 2) Tomadas de cozinha, copa, área de serviço e lavanderia (circuitos exclusivos — 9.5.3.2)
-    exclusivas = [(c["nome"], va) for c in comodos if c["tipo"] in norma.LOCAIS_TUG_EXCLUSIVO for va in c["tug_va"]]
+    exclusivas = [(c["nome"], va, i) for c in comodos if c["tipo"] in norma.LOCAIS_TUG_EXCLUSIVO
+                  for i, va in enumerate(c["tug_va"])]
     for g in _empacotar(exclusivas, p["corrente_max_tomadas"] * vfn):
-        novo("tomadas", "Tomadas", g, vfn)
+        novo("tomadas", "Tomadas", g, vfn, "tug")
 
     # 3) Demais tomadas
-    demais = [(c["nome"], va) for c in comodos if c["tipo"] not in norma.LOCAIS_TUG_EXCLUSIVO for va in c["tug_va"]]
+    demais = [(c["nome"], va, i) for c in comodos if c["tipo"] not in norma.LOCAIS_TUG_EXCLUSIVO
+              for i, va in enumerate(c["tug_va"])]
     for g in _empacotar(demais, p["corrente_max_tomadas"] * vfn):
-        novo("tomadas", "Tomadas", g, vfn)
+        novo("tomadas", "Tomadas", g, vfn, "tug")
 
     # 4) Tomadas/pontos de uso específico: um circuito para cada equipamento
     for c in comodos:
-        for eq in c.get("equipamentos", []):
-            novo("tue", eq["nome"], [(c["nome"], eq["va"])], eq["tensao"])
+        for i, eq in enumerate(c.get("equipamentos", [])):
+            novo("tue", eq["nome"], [(c["nome"], eq["va"], i)], eq["tensao"], "tue")
     return circuitos
 
 

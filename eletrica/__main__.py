@@ -5,7 +5,7 @@ Gera em saida/<nome-do-arquivo>/: relatorio.html, unifilar.svg, resultado.json e
 import os
 import sys
 
-from . import circuitos, materiais, relatorio, unifilar
+from . import circuitos, dxf, materiais, planta, relatorio, unifilar
 from .projeto import ErroProjeto, carregar
 
 
@@ -15,11 +15,15 @@ def gerar(caminho: str, pasta_saida: str = "saida") -> str:
     resultado = circuitos.calcular(dados)
     lista = materiais.listar(dados, resultado)
     svg = unifilar.gerar(dados, resultado)
+    planta_svg = planta.svg(dados, resultado)
 
     destino = os.path.join(pasta_saida, os.path.splitext(os.path.basename(caminho))[0])
     os.makedirs(destino, exist_ok=True)
+    with open(os.path.join(destino, "projeto.dxf"), "wb") as f:
+        f.write(dxf.gerar(dados, resultado))
     arquivos = {
-        "relatorio.html": relatorio.html(dados, resultado, lista, svg),
+        "relatorio.html": relatorio.html(dados, resultado, lista, svg, planta_svg),
+        "planta.svg": planta_svg,
         "unifilar.svg": svg,
         "resultado.json": relatorio.json_resultado(dados, resultado, lista),
         "materiais.csv": relatorio.csv_materiais(lista),

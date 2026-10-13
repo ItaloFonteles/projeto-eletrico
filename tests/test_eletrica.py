@@ -5,7 +5,7 @@ import os
 import tempfile
 import unittest
 
-from eletrica import circuitos, materiais, norma, unifilar
+from eletrica import circuitos, dxf, materiais, norma, planta, unifilar
 from eletrica.__main__ import gerar
 from eletrica.projeto import ErroProjeto, carregar, preparar
 
@@ -132,7 +132,7 @@ class TestEntradaESaida(unittest.TestCase):
         saida = tempfile.mkdtemp()
         destino = gerar(os.path.join("projetos", "casa-exemplo.toml"), saida)
         self.assertEqual(sorted(os.listdir(destino)),
-                         ["materiais.csv", "relatorio.html", "resultado.json", "unifilar.svg"])
+                         ["materiais.csv", "planta.svg", "projeto.dxf", "relatorio.html", "resultado.json", "unifilar.svg"])
         with open(os.path.join(destino, "relatorio.html"), encoding="utf-8") as f:
             self.assertIn("Não substitui o projeto elétrico", f.read())
 
@@ -142,6 +142,58 @@ class TestEntradaESaida(unittest.TestCase):
         lista = materiais.listar(d, r)
         self.assertTrue(any("DR" in m["descricao"] for m in lista))
         self.assertIn("<svg", unifilar.gerar(d, r))
+
+
+class TestPlanta(unittest.TestCase):
+    def setUp(self):
+        self.d = projeto(
+            SALA | {"largura": 4.5, "comprimento": 4, "x": 0, "y": 0},
+            COZINHA | {"largura": 3, "comprimento": 3, "x": 4.5, "y": 0,
+                       "equipamentos": [{"nome": "Micro-ondas", "potencia_w": 1500}]},
+            BANHEIRO | {"largura": 2, "comprimento": 1.5, "x": 4.5, "y": 3})
+        self.r = circuitos.calcular(self.d)
+        self.info = planta.pontos(self.d, self.r)
+
+    def test_quantidade_de_pontos_bate_com_o_calculo(self):
+        itens = self.info["itens"]
+        for c in self.d["comodos"]:
+            dele = [p for p in itens if p["comodo"] == c["nome"]]
+            self.assertEqual(sum(p["tipo"] == "tug" for p in dele), c["tug_pontos"])
+            self.assertEqual(sum(p["tipo"] == "tue" for p in dele), len(c.get("equipamentos", [])))
+            self.assertEqual(sum(p["tipo"] == "luz" for p in dele), c["il_pontos"])
+            self.assertEqual(sum(p["tipo"] == "interruptor" for p in dele), 1)
+
+    def test_pontos_dentro_do_comodo_e_com_circuito(self):
+        comodos = {c["nome"]: c for c in self.d["comodos"]}
+        numeros = {c.numero for c in self.r["circuitos"]}
+        for p in self.info["itens"]:
+            c = comodos[p["comodo"]]
+            w, h = planta.dimensoes(c)
+            self.assertTrue(c["x"] <= p["x"] <= c["x"] + w and c["y"] <= p["y"] <= c["y"] + h, p)
+            self.assertIn(p["circuito"], numeros)
+
+    def test_distancia_estimada_pela_planta(self):
+        d = projeto({"nome": "Quarto", "tipo": "dormitorio", "largura": 3, "comprimento": 3, "x": 6, "y": 0},
+                    quadro_x=0, quadro_y=0)
+        self.assertEqual(d["comodos"][0]["distancia_quadro"], 7.5 + 1.5 + 3)   # em L + 3 m
+
+    def test_arrumacao_automatica_e_sobreposicao(self):
+        d = projeto(SALA, COZINHA)            # sem x/y
+        self.assertTrue(all("x" in c and "y" in c for c in d["comodos"]))
+        self.assertTrue(any("arrumados automaticamente" in a for a in d["avisos"]))
+        d2 = projeto(SALA | {"x": 0, "y": 0}, COZINHA | {"x": 1, "y": 1})
+        self.assertTrue(any("sobrepostos" in a for a in d2["avisos"]))
+
+    def test_dxf_valido(self):
+        texto = dxf.gerar(self.d, self.r).decode("cp1252")
+        linhas = texto.split("\r\n")
+        self.assertEqual(linhas[-2], "EOF")
+        for secao in ("HEADER", "TABLES", "ENTITIES"):
+            self.assertIn(secao, linhas)
+        self.assertEqual(linhas.count("SECTION"), linhas.count("ENDSEC"))
+        self.assertGreater(linhas.count("LINE"), 20)
+        self.assertIn("Cozinha", texto)
+        self.assertTrue(len(linhas) % 2 == 1)                         # pares código/valor + linha final vazia
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-# Casa térrea de exemplo: 2 quartos, 1 suíte, Boa Vista - RR
+# Casa térrea de exemplo: 2 quartos (1 suíte), Boa Vista - RR
 # Para gerar:  python -m eletrica projetos/casa-exemplo.toml
 
 [projeto]
@@ -10,26 +10,41 @@ tensao_fn = 127                 # fase-neutro
 tensao_ff = 220                 # fase-fase
 temperatura_ambiente = 35       # Boa Vista: usar 35 °C (lado da segurança)
 circuitos_por_eletroduto = 3    # pior trecho (saída do quadro)
+quadro_x = 5.0                  # posição do quadro na planta (m), no corredor
+quadro_y = 5.15
 
-# Cada cômodo: tipo, área (m²), perímetro (m) e distância aproximada do quadro (m).
-# Opcional: tomadas = N (se quiser mais que o mínimo), pontos_luz = N, [[comodos.equipamentos]].
+# Cada cômodo: tipo, largura e comprimento (m) e posição na planta (x, y do canto
+# superior esquerdo, em metros). A distância até o quadro é estimada pela planta;
+# para informar na mão, use distancia_quadro = N.
+# Opcional: tomadas = N (mais que o mínimo), pontos_luz = N, [[comodos.equipamentos]].
+# Cômodo irregular: em vez de largura/comprimento, use area = N e perimetro = N.
 # Tipos: sala, dormitorio, cozinha, copa, area_servico, lavanderia, banheiro, varanda,
 #        corredor, garagem, escritorio, externa, outro
 
 [[comodos]]
+nome = "Varanda"
+tipo = "varanda"
+largura = 4.0
+comprimento = 2.0
+x = 0.0
+y = 0.0
+
+[[comodos]]
 nome = "Sala"
 tipo = "sala"
-area = 18.0
-perimetro = 17.0
-distancia_quadro = 6
+largura = 4.5
+comprimento = 4.0
+x = 0.0
+y = 2.0
 tomadas = 5
 
 [[comodos]]
 nome = "Cozinha"
 tipo = "cozinha"
-area = 10.5
-perimetro = 13.0
-distancia_quadro = 4
+largura = 3.5
+comprimento = 3.0
+x = 4.5
+y = 2.0
 
   [[comodos.equipamentos]]
   nome = "Micro-ondas"
@@ -43,9 +58,10 @@ distancia_quadro = 4
 [[comodos]]
 nome = "Área de serviço"
 tipo = "area_servico"
-area = 5.0
-perimetro = 9.0
-distancia_quadro = 7
+largura = 2.5
+comprimento = 2.0
+x = 8.0
+y = 2.0
 
   [[comodos.equipamentos]]
   nome = "Máquina de lavar"
@@ -54,29 +70,18 @@ distancia_quadro = 7
 [[comodos]]
 nome = "Corredor"
 tipo = "corredor"
-area = 4.0
-perimetro = 10.0
-distancia_quadro = 5
+largura = 4.0
+comprimento = 1.0
+x = 4.5
+y = 5.0
 
 [[comodos]]
 nome = "Quarto 1"
 tipo = "dormitorio"
-area = 10.24
-perimetro = 12.8
-distancia_quadro = 10
-
-  [[comodos.equipamentos]]
-  nome = "Ar-condicionado 12.000 BTU"
-  potencia_w = 1100
-  tensao = 220
-  fp = 0.9
-
-[[comodos]]
-nome = "Quarto 2 (suíte)"
-tipo = "dormitorio"
-area = 12.25
-perimetro = 14.0
-distancia_quadro = 13
+largura = 3.2
+comprimento = 3.2
+x = 0.0
+y = 6.0
 
   [[comodos.equipamentos]]
   nome = "Ar-condicionado 12.000 BTU"
@@ -87,30 +92,39 @@ distancia_quadro = 13
 [[comodos]]
 nome = "Banheiro social"
 tipo = "banheiro"
-area = 3.6
-perimetro = 7.8
-distancia_quadro = 8
+largura = 2.0
+comprimento = 1.8
+x = 3.2
+y = 6.0
 
   [[comodos.equipamentos]]
   nome = "Chuveiro"
   potencia_w = 5500
   tensao = 220
+
+[[comodos]]
+nome = "Quarto 2 (suíte)"
+tipo = "dormitorio"
+largura = 3.5
+comprimento = 3.5
+x = 5.2
+y = 6.0
+
+  [[comodos.equipamentos]]
+  nome = "Ar-condicionado 12.000 BTU"
+  potencia_w = 1100
+  tensao = 220
+  fp = 0.9
 
 [[comodos]]
 nome = "Banheiro suíte"
 tipo = "banheiro"
-area = 3.2
-perimetro = 7.2
-distancia_quadro = 15
+largura = 2.0
+comprimento = 1.6
+x = 8.7
+y = 6.0
 
   [[comodos.equipamentos]]
   nome = "Chuveiro"
   potencia_w = 5500
   tensao = 220
-
-[[comodos]]
-nome = "Varanda"
-tipo = "varanda"
-area = 8.0
-perimetro = 12.0
-distancia_quadro = 9

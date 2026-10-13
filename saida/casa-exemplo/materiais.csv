@@ -4,12 +4,12 @@ Proteção;Disjuntor termomagnético monopolar curva C 13 A;4;un
 Proteção;Disjuntor termomagnético bipolar curva C 6 A;2;un
 Proteção;Disjuntor termomagnético bipolar curva C 10 A;1;un
 Proteção;Disjuntor termomagnético bipolar curva C 25 A;2;un
-Proteção;Interruptor DR bipolar 25 A / 30 mA;8;un
+Proteção;Interruptor DR bipolar 25 A / 30 mA;9;un
 Proteção;DPS classe II 275 V (um por fase e um para o neutro);3;un
-Proteção;Quadro de distribuição de embutir com barramento (mín. 47 módulos DIN);1;un
-Condutores;Cabo flexível 750 V 1,5 mm² (fase, neutro e terra — separar por cor);52;m
-Condutores;Cabo flexível 750 V 2,5 mm² (fase, neutro e terra — separar por cor);266;m
-Condutores;Cabo flexível 750 V 6 mm² (fase, neutro e terra — separar por cor);80;m
+Proteção;Quadro de distribuição de embutir com barramento (mín. 50 módulos DIN);1;un
+Condutores;Cabo flexível 750 V 1,5 mm² (fase, neutro e terra — separar por cor);36;m
+Condutores;Cabo flexível 750 V 2,5 mm² (fase, neutro e terra — separar por cor);250;m
+Condutores;Cabo flexível 750 V 6 mm² (fase, neutro e terra — separar por cor);52;m
 Pontos;Tomada 2P+T 10 A (uso geral);22;un
 Pontos;Tomada 2P+T 20 A (uso específico);2;un
 Pontos;Ponto de luz no teto (caixa octogonal);9;un

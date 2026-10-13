@@ -20,6 +20,22 @@ Como o projeto é um arquivo de texto versionado no **Git**, cada revisão fica 
 - O formulário roda **o mesmo código Python** da pasta `eletrica/` dentro do navegador ([Pyodide](https://pyodide.org)). Os números são os mesmos da linha de comando e dos testes, e nada é enviado para servidor nenhum.
 - O rascunho fica salvo no navegador, e dá para reabrir um `.toml` para editar.
 
+## Desenhos: planta de pontos e DXF
+
+- **Planta (monte a casa):** no formulário, arraste os cômodos para montar a casa. As paredes se encaixam quando chegam perto, e o **toque duplo gira** o cômodo. Também dá para arrastar o **QD** até onde ficará o quadro. Cômodos sobrepostos ficam em vermelho.
+- **Planta de pontos esquemática** (`planta.svg` e no relatório):
+  - luz no centro do teto;
+  - tomadas de uso geral e específico distribuídas pelas paredes;
+  - interruptor no canto mais próximo do quadro;
+  - **número do circuito em cada ponto**;
+  - legenda e grade de 1 m.
+- **DXF** (`projeto.dxf`, formato R12): planta + unifilar em camadas (`PAREDES`, `LUZ`, `TOMADAS`, `INTERRUPTORES`, `QUADRO`, `UNIFILAR`), em metros. Abre no **AutoCAD, LibreCAD, QCAD e BricsCAD**, para o projetista ajustar e assinar. Validado com o *auditor* do [ezdxf](https://github.com/mozman/ezdxf): 0 erros.
+- **Distância até o quadro:** se não for informada, é **estimada pela planta** (caminho em L do quadro ao centro do cômodo + 3 m de subidas).
+
+No `.toml`, a posição é `x`/`y` (canto superior esquerdo do cômodo, em metros) e o quadro é `quadro_x`/`quadro_y` em `[projeto]`. Cômodos sem posição são arrumados automaticamente em fileiras.
+
+> A planta é **esquemática**: a posição exata de cada ponto (portas, janelas e móveis) é definida no projeto final e na obra.
+
 ## Exemplo
 
 O arquivo [`projetos/casa-exemplo.toml`](projetos/casa-exemplo.toml) descreve uma casa com 2 quartos, 2 banheiros, cozinha, área de serviço e varanda em Boa Vista - RR. O resultado está em [`saida/casa-exemplo/`](saida/casa-exemplo/):
@@ -27,6 +43,8 @@ O arquivo [`projetos/casa-exemplo.toml`](projetos/casa-exemplo.toml) descreve um
 | Arquivo | Conteúdo |
 |---|---|
 | `relatorio.html` | Relatório completo (abrir no navegador; **Ctrl + P → Salvar como PDF**) |
+| `planta.svg` | Planta de pontos esquemática |
+| `projeto.dxf` | Planta + unifilar para AutoCAD/LibreCAD |
 | `unifilar.svg` | Diagrama unifilar do quadro |
 | `materiais.csv` | Lista de materiais (abre no Excel) |
 | `resultado.json` | Todos os números, num formato fácil de comparar no Git |
@@ -113,7 +131,7 @@ git tag casa-maria-rev-B                             # marca a versão entregue
 docker run --rm -v "${PWD}:/p" -w /p python:3.12-slim python -m unittest -v
 ```
 
-18 testes cobrem as regras da norma (iluminação, quantidade e potência das tomadas, exceção de mais de 6 tomadas molhadas), o dimensionamento (chuveiro, queda de tensão, seções mínimas, In ≤ Iz, DR), o balanço de fases e a geração dos arquivos.
+23 testes cobrem as regras da norma (iluminação, quantidade e potência das tomadas, exceção de mais de 6 tomadas molhadas), o dimensionamento (chuveiro, queda de tensão, seções mínimas, In ≤ Iz, DR), o balanço de fases, a planta (pontos dentro dos cômodos, um ponto por carga, distância estimada, sobreposição), o DXF e a geração dos arquivos.
 
 ## Estrutura
 
@@ -126,6 +144,8 @@ projeto-eletrico/
 │   ├── circuitos.py   # divisão, dimensionamento e balanço de fases
 │   ├── materiais.py   # lista de materiais
 │   ├── unifilar.py    # diagrama unifilar (SVG)
+│   ├── planta.py      # planta de pontos (posições e SVG)
+│   ├── dxf.py         # exportação DXF (planta + unifilar)
 │   ├── relatorio.py   # relatório HTML, JSON e CSV
 │   └── __main__.py    # linha de comando
 ├── projetos/          # um .toml por casa

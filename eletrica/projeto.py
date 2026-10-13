@@ -1,7 +1,7 @@
 """Lê o arquivo .toml do projeto, valida e calcula a previsão de cargas por cômodo."""
 import tomllib
 
-from . import norma
+from . import norma, planta
 
 ALIMENTACOES = {"monofasico": ["A"], "bifasico": ["A", "B"], "trifasico": ["A", "B", "C"]}
 
@@ -53,7 +53,7 @@ def preparar(dados: dict) -> dict:
         if "area" not in c and c.get("largura") and c.get("comprimento"):
             c["area"] = round(c["largura"] * c["comprimento"], 2)
             c["perimetro"] = round(2 * (c["largura"] + c["comprimento"]), 2)
-        for campo in ("nome", "tipo", "area", "perimetro", "distancia_quadro"):
+        for campo in ("nome", "tipo", "area", "perimetro"):
             if campo not in c:
                 erros.append(f"{rotulo}: falta '{campo}'")
         if c.get("nome") in nomes:
@@ -86,6 +86,21 @@ def preparar(dados: dict) -> dict:
             eq.setdefault("fp", 1.0)
             eq["va"] = round(eq["potencia_w"] / eq["fp"])
     norma.potencias_tomadas(comodos)
+
+    # Planta: posiciona os cômodos sem x/y e estima a distância até o quadro quando não informada
+    if planta.posicionar(comodos):
+        avisos.append("Cômodos sem posição foram arrumados automaticamente na planta; "
+                      "posicione-os no formulário para um desenho fiel à casa.")
+    quadro = planta.posicao_quadro(p, comodos)
+    estimadas = []
+    for c in comodos:
+        if not c.get("distancia_quadro"):
+            c["distancia_quadro"] = planta.distancia_estimada(c, quadro)
+            estimadas.append(c["nome"])
+    if estimadas:
+        avisos.append(f"Distância até o quadro estimada pela planta (caminho em L + 3 m de subidas): "
+                      f"{', '.join(estimadas)}.")
+    avisos.extend(planta.sobreposicoes(comodos))
 
     dados["avisos"] = avisos
     return dados

@@ -518,7 +518,17 @@ $('#abrir-toml').addEventListener('change', async e => {
   e.target.value = '';
 });
 $('#gerar').addEventListener('click', gerar);
-$('#imprimir').addEventListener('click', () => $('#relatorio').contentWindow.print());
+// No celular, mandar imprimir o iframe imprime a página inteira (com o formulário).
+// Por isso o relatório abre sozinho numa página própria, que já chama a impressão.
+$('#imprimir').addEventListener('click', () => {
+  if (!ultimo) return;
+  const paraImprimir = ultimo.html.replace('</body>',
+    '<script>window.addEventListener("load", () => setTimeout(() => window.print(), 400));<\/script></body>');
+  const url = URL.createObjectURL(new Blob([paraImprimir], { type: 'text/html;charset=utf-8' }));
+  const janela = window.open(url, '_blank');
+  if (!janela) location.href = url;       // bloqueador de pop-up: abre na mesma aba (o "voltar" retorna ao formulário)
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
+});
 $$('[data-baixar]').forEach(b => b.addEventListener('click', () => baixar(b.dataset.baixar)));
 
 if (!abrirRascunho()) adicionarComodo({ nome: 'Sala', tipo: 'sala' });
